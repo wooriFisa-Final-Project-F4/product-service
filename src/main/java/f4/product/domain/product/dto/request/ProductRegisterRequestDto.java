@@ -4,11 +4,11 @@ import f4.product.domain.product.constant.AuctionStatus;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
-@Getter@Setter
-@ToString
+@Getter
+@Setter
 public class ProductRegisterRequestDto {
+
   private String name;
   private String images;
   private String artist;

@@ -19,7 +19,6 @@ public class ProductController {
 
   @PostMapping
   public String register(@RequestBody ProductRegisterRequestDto requestDto) {
-    System.out.println("*****controller : " + requestDto);
     productService.register(requestDto);
     return "상품 등록이 완료되었습니다.";
   }
