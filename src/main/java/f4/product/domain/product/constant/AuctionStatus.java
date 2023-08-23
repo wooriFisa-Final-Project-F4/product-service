@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public enum AuctionStatus {
-    PROGRESS, WAIT, COMPLETE;
+  PROGRESS, WAIT, COMPLETE;
 }
