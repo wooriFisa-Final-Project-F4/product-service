@@ -12,21 +12,20 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
+
   private final ProductRepository productRepository;
   private final AuctionRepository auctionRepository;
   private final ModelMapper modelMapper;
 
   @Override
   @Transactional
-  public void register(ProductRegisterRequestDto requestDto){
+  public void saveProduct(ProductRegisterRequestDto requestDto) {
     Product product = modelMapper.map(requestDto, Product.class);
-    System.out.println(product);
     Product savedProduct = productRepository.save(product);
 
     Auction auction = modelMapper.map(requestDto, Auction.class);
     auction.setProduct(product);
-    System.out.println(auction);
     Auction savedAuction = auctionRepository.save(auction);
   }
 }

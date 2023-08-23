@@ -18,8 +18,8 @@ public class ProductController {
   private final ProductRepository productRepository;
 
   @PostMapping
-  public String register(@RequestBody ProductRegisterRequestDto requestDto) {
-    productService.register(requestDto);
+  public String saveProduct(@RequestBody ProductRegisterRequestDto requestDto) {
+    productService.saveProduct(requestDto);
     return "상품 등록이 완료되었습니다.";
   }
 }
