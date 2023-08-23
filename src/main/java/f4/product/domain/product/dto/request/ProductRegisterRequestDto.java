@@ -4,15 +4,16 @@ import f4.product.domain.product.constant.AuctionStatus;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
 public class ProductRegisterRequestDto {
 
   private String name;
-  private String images;
+  private MultipartFile images;
   private String artist;
-  private String description;
+  private MultipartFile description;
   private String completionDate;
   private String size;
   private String theme;
