@@ -29,6 +29,7 @@ public class Product {
   @Column(name = "name")
   private String name;
 
+  @Column(name = "images")
   private String images;
 
   @Column(name = "artist")
