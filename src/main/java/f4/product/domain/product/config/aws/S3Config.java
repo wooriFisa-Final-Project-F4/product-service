@@ -1,4 +1,4 @@
-package f4.product.global.config;
+package f4.product.domain.product.config.aws;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -22,9 +22,8 @@ public class S3Config {  // 설정 값 등록 파일
   private String region;
 
   @Bean
-  public AmazonS3 amazonS3Client() {
+  public AmazonS3 s3Client() {
     AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
-
     return AmazonS3ClientBuilder
         .standard()
         .withCredentials(new AWSStaticCredentialsProvider(credentials))

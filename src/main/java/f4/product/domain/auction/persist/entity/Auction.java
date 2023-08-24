@@ -1,6 +1,7 @@
-package f4.product.domain.product.persist.entity;
+package f4.product.domain.auction.persist.entity;
 
 import f4.product.domain.product.constant.AuctionStatus;
+import f4.product.domain.product.persist.entity.Product;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
