@@ -1,6 +1,6 @@
-package f4.product.domain.product.persist.entity;
+package f4.product.persist.entity;
 
-import f4.product.domain.product.constant.SellStatus;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -8,14 +8,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import f4.product.constant.AuctionStatus;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -23,7 +22,7 @@ public class Product {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "product_id")
+  @Column(name = "id")
   private Long id;
 
   @Column(name = "name")
@@ -32,18 +31,17 @@ public class Product {
   @Column(name = "images")
   private String images;
 
-  @Column(name = "artist")
+  @Column(name="artist")
   private String artist;
+
+  @Column(name="country")
+  private String country;
 
   @Column(name = "description")
   private String description;
 
   @Column(name = "completion_date")
   private String completionDate;
-
-  @Column(name = "sell_status")
-  @Enumerated(EnumType.STRING)
-  private SellStatus status;
 
   @Column(name = "size")
   private String size;
@@ -57,9 +55,19 @@ public class Product {
   @Column(name = "technique")
   private String technique;
 
-  @Column(name = "mediums")
-  private String mediums;
+  @Column(name = "auction_price")
+  private String auctionPrice;
 
-  @Column(name = "country")
-  private String country;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "auction_status")
+  private AuctionStatus auctionStatus;
+
+  @Column(name = "auction_start_time")
+  private LocalDateTime auctionStartTime;
+
+  @Column(name = "auction_end_time")
+  private LocalDateTime auctionEndTime;
+
+  @Column(name = "bid_user_id")
+  private String bidUserId;
 }

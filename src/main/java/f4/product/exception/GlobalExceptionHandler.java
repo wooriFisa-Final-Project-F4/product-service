@@ -1,4 +1,4 @@
-package f4.product.global.exception;
+package f4.product.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,8 +12,10 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler({CustomException.class})
   public ResponseEntity<?> customExceptionHandler(CustomException e) {
-    log.error("errorCode: {}, path: {}, message",
-        e.getCustomErrorCode().getCode(), e.getCustomErrorCode().getPath(),
+    log.error(
+        "errorCode: {}, path: {}, message",
+        e.getCustomErrorCode().getCode(),
+        e.getCustomErrorCode().getPath(),
         e.getCustomErrorCode().getMessage());
 
     return new ResponseEntity<>(
@@ -22,7 +24,6 @@ public class GlobalExceptionHandler {
             .code(e.getCustomErrorCode().getCode())
             .message(e.getCustomErrorCode().getMessage())
             .build(),
-        HttpStatus.BAD_REQUEST
-    );
+        HttpStatus.BAD_REQUEST);
   }
 }

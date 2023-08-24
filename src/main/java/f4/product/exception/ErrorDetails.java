@@ -1,4 +1,4 @@
-package f4.product.global.exception;
+package f4.product.exception;
 
 import lombok.Builder;
 import lombok.Getter;

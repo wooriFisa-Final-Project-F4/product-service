@@ -1,4 +1,4 @@
-package f4.product.domain.product.config.aws;
+package f4.product.config;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class S3Config {  // 설정 값 등록 파일
+public class AwsConfig {  // 설정 값 등록 파일
 
   @Value(("${cloud.aws.credentials.access-key}"))
   private String accessKey;
