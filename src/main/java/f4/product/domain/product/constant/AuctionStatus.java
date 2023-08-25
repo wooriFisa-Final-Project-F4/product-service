@@ -1,4 +1,4 @@
-package f4.product.constant;
+package f4.product.domain.product.constant;
 
 import lombok.Getter;
 

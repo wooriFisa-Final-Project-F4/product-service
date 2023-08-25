@@ -1,15 +1,13 @@
-package f4.product.service.impl;
+package f4.product.domain.product.service.impl;
 
-import f4.product.dto.request.ProductSaveRequestDto;
-import f4.product.persist.entity.Product;
-import f4.product.persist.repository.ProductRepository;
-
+import f4.product.domain.product.dto.request.ProductSaveRequestDto;
+import f4.product.domain.product.persist.entity.Product;
+import f4.product.domain.product.persist.repository.ProductRepository;
+import f4.product.domain.product.service.ProductService;
+import f4.product.global.service.S3Service;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
-
-import f4.product.service.ProductService;
-import f4.product.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
     List<String> imageUrls = new ArrayList<>();
 
     /* 반복문을 사용하여 S3Service의 uplodaFile로 객체를 하나씩 넘기고 url을 반환받음*/
-    for(MultipartFile image : requestDto.getImages()){
+    for (MultipartFile image : requestDto.getImages()) {
       String url = s3Service.uploadFile(image);
       imageUrls.add(url);
     }

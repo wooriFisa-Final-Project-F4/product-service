@@ -1,4 +1,4 @@
-package f4.product.constant;
+package f4.product.global.constant;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

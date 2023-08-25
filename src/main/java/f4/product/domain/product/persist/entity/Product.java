@@ -1,5 +1,6 @@
-package f4.product.persist.entity;
+package f4.product.domain.product.persist.entity;
 
+import f4.product.domain.product.constant.AuctionStatus;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,9 +9,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-import f4.product.constant.AuctionStatus;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -31,10 +35,10 @@ public class Product {
   @Column(name = "images")
   private String images;
 
-  @Column(name="artist")
+  @Column(name = "artist")
   private String artist;
 
-  @Column(name="country")
+  @Column(name = "country")
   private String country;
 
   @Column(name = "description")

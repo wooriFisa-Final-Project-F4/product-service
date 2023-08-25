@@ -1,8 +1,7 @@
-package f4.product.controller;
+package f4.product.domain.product.controller;
 
-import f4.product.dto.request.ProductSaveRequestDto;
-import f4.product.service.ProductService;
-
+import f4.product.domain.product.dto.request.ProductSaveRequestDto;
+import f4.product.domain.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

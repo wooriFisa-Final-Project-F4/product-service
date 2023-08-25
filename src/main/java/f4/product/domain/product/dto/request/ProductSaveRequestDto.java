@@ -1,9 +1,8 @@
-package f4.product.dto.request;
+package f4.product.domain.product.dto.request;
 
+import f4.product.domain.product.constant.AuctionStatus;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import f4.product.constant.AuctionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
