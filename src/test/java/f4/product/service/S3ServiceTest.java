@@ -1,5 +1,6 @@
 package f4.product.service;
 
+import f4.product.global.service.S3Service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

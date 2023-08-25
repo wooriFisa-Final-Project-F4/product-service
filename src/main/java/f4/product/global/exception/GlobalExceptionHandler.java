@@ -1,4 +1,4 @@
-package f4.product.exception;
+package f4.product.global.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

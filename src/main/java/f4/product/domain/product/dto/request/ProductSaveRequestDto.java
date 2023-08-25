@@ -1,14 +1,15 @@
-package f4.product.dto.request;
+package f4.product.domain.product.dto.request;
 
+import f4.product.domain.product.constant.AuctionStatus;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import f4.product.constant.AuctionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
@@ -16,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductSaveRequestDto {
+public class ProductSaveRequestDto implements Serializable {
 
   private String name;
   private List<MultipartFile> images;
@@ -30,8 +31,9 @@ public class ProductSaveRequestDto {
   private String technique;
   private String mediums;
   private String auctionPrice;
-  private AuctionStatus auctionStatus;
+  private String auctionStatus;
+  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   private LocalDateTime auctionStartTime;
+  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   private LocalDateTime auctionEndTime;
-  private String bidUserId;
 }
