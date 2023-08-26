@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -35,5 +36,10 @@ public class ProductController {
   public ResponseEntity<ProductReadResponseDto> getProductById(@PathVariable Long productId) {
     ProductReadResponseDto productDto = productService.readProductById(productId);
     return ResponseEntity.ok(productDto);
+  }
+  @GetMapping("/by-name")
+  public ResponseEntity<List<ProductReadResponseDto>> getProductsByName(@RequestParam String name) {
+    List<ProductReadResponseDto> products = productService.readProductsByName(name);
+    return ResponseEntity.ok(products);
   }
 }

@@ -12,6 +12,7 @@ import f4.product.global.constant.CustomErrorCode;
 import f4.product.global.exception.CustomException;
 import f4.product.global.service.S3Service;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -100,6 +101,21 @@ public class ProductServiceImpl implements ProductService {
   private Product getProductById(Long productId) {
     return productRepository.findById(productId)
         .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
+  }
+
+  @Override
+  public List<ProductReadResponseDto> readProductsByName(String productName) {
+    Optional<Product> products = getProductsByName(productName);
+    if (products.isEmpty()) {
+      throw new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT);
+    }
+    return products.stream()
+        .map(this::convertToResponseDto)
+        .collect(Collectors.toList());
+  }
+
+  private Optional<Product> getProductsByName(String name) {
+    return productRepository.findByName(name);
   }
   /* ProductSaveRequestDto를 Product객체로 변환함*/
   private static Product productBuild(ProductSaveRequestDto requestDto, String identifier) {

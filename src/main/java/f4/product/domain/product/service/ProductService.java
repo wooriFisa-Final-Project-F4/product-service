@@ -10,4 +10,8 @@ public interface ProductService {
 
   List<ProductReadResponseDto> readAllProducts();
   ProductReadResponseDto readProductById(Long productId);
+
+  List<ProductReadResponseDto> readProductsByName(String name);
+
+
 }
