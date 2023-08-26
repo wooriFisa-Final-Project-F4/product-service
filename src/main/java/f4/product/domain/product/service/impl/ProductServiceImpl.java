@@ -2,6 +2,7 @@ package f4.product.domain.product.service.impl;
 
 import f4.product.domain.product.constant.AuctionStatus;
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
+import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.persist.entity.Product;
 import f4.product.domain.product.persist.entity.ProductImage;
 import f4.product.domain.product.persist.repository.ProductImageRepository;
@@ -10,11 +11,11 @@ import f4.product.domain.product.service.ProductService;
 import f4.product.global.constant.CustomErrorCode;
 import f4.product.global.exception.CustomException;
 import f4.product.global.service.S3Service;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +26,7 @@ public class ProductServiceImpl implements ProductService {
   private final ProductRepository productRepository;
   private final ProductImageRepository productImageRepository;
   private final S3Service s3Service;
+  private final ModelMapper modelMapper;
 
   @Override
   @Transactional
@@ -47,7 +49,42 @@ public class ProductServiceImpl implements ProductService {
       productImageRepository.save(productImageBuild(save, url));
     }
   }
+  //모든 작품 조회
+  // Product 엔티티를 ProductReadResponseDto로 변환하여 리스트로 반환
+  @Override
+  public List<ProductReadResponseDto> readAllProducts() {
+    List<Product> products = productRepository.findAll();
+    return products.stream()
+        .map(this::convertToResponseDto)
+        .collect(Collectors.toList());
+  }
 
+  private ProductReadResponseDto convertToResponseDto(Product product) {
+    ProductReadResponseDto responseDto = modelMapper.map(product, ProductReadResponseDto.class);
+
+    // ProductImage 엔티티 정보를 ProductReadResponseDto에 추가
+    List<String> imageUrls = product.getImages().stream()
+        .map(ProductImage::getImageUrl)
+        .collect(Collectors.toList());
+    responseDto.setImageUrl(imageUrls);
+    responseDto.setArtist(product.getArtist());
+    responseDto.setCountry(product.getCountry());
+    responseDto.setDescription(product.getDescription());
+    responseDto.setCompletionDate(product.getCompletionDate());
+    responseDto.setSize(product.getSize());
+    responseDto.setTheme(product.getTheme());
+    responseDto.setStyle(product.getStyle());
+    responseDto.setTechnique(product.getTechnique());
+    responseDto.setAuctionPrice(product.getAuctionPrice());
+    responseDto.setAuctionStatus(product.getAuctionStatus());
+    responseDto.setAuctionStartTime(product.getAuctionStartTime());
+    responseDto.setAuctionEndTime(product.getAuctionEndTime());
+
+    return responseDto;
+
+  }
+
+  // ProductImage 엔티티를 생성
   private static ProductImage productImageBuild(Product save, String url) {
     return ProductImage.builder()
         .product(save)
