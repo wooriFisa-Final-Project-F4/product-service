@@ -91,7 +91,16 @@ public class ProductServiceImpl implements ProductService {
         .imageUrl(url)
         .build();
   }
+  @Override
+  public ProductReadResponseDto readProductById(Long productId) {
+    Product product = getProductById(productId);
+    return convertToResponseDto(product);
+  }
 
+  private Product getProductById(Long productId) {
+    return productRepository.findById(productId)
+        .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
+  }
   /* ProductSaveRequestDto를 Product객체로 변환함*/
   private static Product productBuild(ProductSaveRequestDto requestDto, String identifier) {
     // 고유식별자 생성

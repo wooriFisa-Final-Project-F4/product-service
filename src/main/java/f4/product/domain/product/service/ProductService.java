@@ -9,4 +9,5 @@ public interface ProductService {
   void saveProduct(ProductSaveRequestDto product);
 
   List<ProductReadResponseDto> readAllProducts();
+  ProductReadResponseDto readProductById(Long productId);
 }
