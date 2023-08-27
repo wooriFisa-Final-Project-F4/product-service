@@ -42,4 +42,9 @@ public class ProductController {
     List<ProductReadResponseDto> products = productService.readProductsByName(name);
     return ResponseEntity.ok(products);
   }
+  @GetMapping("/by-artist")
+  public ResponseEntity<List<ProductReadResponseDto>> getProductsByArtist(@RequestParam String artist) {
+    List<ProductReadResponseDto> products = productService.readProductsByArtist(artist);
+    return ResponseEntity.ok(products);
+  }
 }

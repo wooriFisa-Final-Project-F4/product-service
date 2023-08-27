@@ -117,6 +117,24 @@ public class ProductServiceImpl implements ProductService {
   private Optional<Product> getProductsByName(String name) {
     return productRepository.findByName(name);
   }
+
+  @Override
+  public List<ProductReadResponseDto> readProductsByArtist(String artist) {
+    Optional<Product> products = getProductsByArtist(artist);
+
+    if (products.isEmpty()) {
+      throw new CustomException(CustomErrorCode.NOT_FOUND_ARTIST);
+    }
+
+    return products.stream()
+        .map(this::convertToResponseDto)
+        .collect(Collectors.toList());
+  }
+
+  private Optional<Product> getProductsByArtist(String artist) {
+    return productRepository.findByArtist(artist);
+  }
+
   /* ProductSaveRequestDto를 Product객체로 변환함*/
   private static Product productBuild(ProductSaveRequestDto requestDto, String identifier) {
     // 고유식별자 생성

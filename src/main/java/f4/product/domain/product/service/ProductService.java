@@ -13,5 +13,5 @@ public interface ProductService {
 
   List<ProductReadResponseDto> readProductsByName(String name);
 
-
+  List<ProductReadResponseDto> readProductsByArtist(String artist);
 }
