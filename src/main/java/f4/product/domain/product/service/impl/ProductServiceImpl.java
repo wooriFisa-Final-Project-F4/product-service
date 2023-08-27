@@ -17,8 +17,11 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Sort;
 
 @Service
 @RequiredArgsConstructor
@@ -133,6 +136,34 @@ public class ProductServiceImpl implements ProductService {
 
   private Optional<Product> getProductsByArtist(String artist) {
     return productRepository.findByArtist(artist);
+  }
+
+  @Override
+  public List<ProductReadResponseDto> searchProductsByCategory(String category, String keyword) {
+    Specification<Product> spec = Specification.where(null);
+
+    if ("theme".equals(category)) {
+      spec = spec.and((root, query, criteriaBuilder) ->
+          criteriaBuilder.equal(root.get("theme"), keyword));
+    } else if ("style".equals(category)) {
+      spec = spec.and((root, query, criteriaBuilder) ->
+          criteriaBuilder.equal(root.get("style"), keyword));
+    } else if ("technique".equals(category)) {
+      spec = spec.and((root, query, criteriaBuilder) ->
+          criteriaBuilder.equal(root.get("technique"), keyword));
+    } else if ("mediums".equals(category)) {
+      spec = spec.and((root, query, criteriaBuilder) ->
+          criteriaBuilder.equal(root.get("mediums"), keyword));
+    } else {
+      throw new IllegalArgumentException("Invalid category: " + category);
+    }
+
+    Sort sort = Sort.by(Sort.Direction.DESC, "name"); // 예시로 name 필드를 기준으로 내림차순 정렬
+
+    List<Product> products = productRepository.findAll(spec, sort);
+    return products.stream()
+        .map(product -> modelMapper.map(product, ProductReadResponseDto.class))
+        .collect(Collectors.toList());
   }
 
   /* ProductSaveRequestDto를 Product객체로 변환함*/

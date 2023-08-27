@@ -14,4 +14,6 @@ public interface ProductService {
   List<ProductReadResponseDto> readProductsByName(String name);
 
   List<ProductReadResponseDto> readProductsByArtist(String artist);
+
+  List<ProductReadResponseDto> searchProductsByCategory(String category, String keyword);
 }

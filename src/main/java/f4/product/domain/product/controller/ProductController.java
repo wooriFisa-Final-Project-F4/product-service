@@ -47,4 +47,9 @@ public class ProductController {
     List<ProductReadResponseDto> products = productService.readProductsByArtist(artist);
     return ResponseEntity.ok(products);
   }
+  @GetMapping("/search")
+  public ResponseEntity<List<ProductReadResponseDto>> searchProductsByCategory(@RequestParam String category, @RequestParam String keyword) {
+    List<ProductReadResponseDto> products = productService.searchProductsByCategory(category, keyword);
+    return ResponseEntity.ok(products);
+  }
 }
