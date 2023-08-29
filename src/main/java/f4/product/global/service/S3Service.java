@@ -36,4 +36,18 @@ public class S3Service {
       throw new CustomException(CustomErrorCode.EMPTY_UPLOAD_FILE, e);
     }
   }
+  //주어진 이미지 URL에 해당하는 파일을 S3에서 삭제
+  public void deleteFile(String imageUrl) {
+    try {
+      String fileName = extractFileNameFromUrl(imageUrl);
+      s3Client.deleteObject(bucketName, fileName);
+    } catch (AmazonServiceException e) {
+      throw new CustomException(CustomErrorCode.S3_DELETE_FAIL, e);
+    }
+  }
+  //이미지 URL에서 파일명을 추출
+  private String extractFileNameFromUrl(String imageUrl) {
+    String[] parts = imageUrl.split("/");
+    return parts[parts.length - 1];
+  }
 }

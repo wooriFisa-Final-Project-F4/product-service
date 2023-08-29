@@ -17,4 +17,6 @@ public interface ProductService {
   List<ProductReadResponseDto> findByArtist(String artist);
 
   List<ProductReadResponseDto> findByMediumAndKeyword(String theme, String keyword);
+
+  void deleteProduct(Long productId);
 }

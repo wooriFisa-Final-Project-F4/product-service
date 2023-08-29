@@ -147,4 +147,26 @@ public class ProductServiceImpl implements ProductService {
   private ProductImage createProductImage(Product product, String url) {
     return ProductImage.builder().product(product).imageUrl(url).build();
   }
+  @Override
+  @Transactional
+  public void deleteProduct(Long productId) {
+    Product product = findProductOrThrow(productId);
+
+    // S3에서 이미지 삭제
+    deleteProductImages(product.getImages());
+
+    // 상품 이미지 데이터베이스에서 삭제
+    productImageRepository.deleteAll(product.getImages());
+
+    // 상품 정보 데이터베이스에서 삭제
+    productRepository.delete(product);
+  }
+
+  // 이미지를 S3에서 삭제
+  private void deleteProductImages(List<ProductImage> images) {
+    for (ProductImage image : images) {
+      String imageUrl = image.getImageUrl();
+      s3Service.deleteFile(imageUrl);
+    }
+  }
 }
