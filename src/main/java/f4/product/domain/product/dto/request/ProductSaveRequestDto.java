@@ -26,10 +26,10 @@ public class ProductSaveRequestDto implements Serializable {
   private String description;
   private String completionDate;
   private String size;
+  private String medium;
   private String theme;
   private String style;
   private String technique;
-  private String mediums;
   private String auctionPrice;
   private String auctionStatus;
 
