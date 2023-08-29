@@ -13,7 +13,8 @@ public enum CustomErrorCode {
   INVALID_AUCTION_STATUS(400, "잘못된 옥션 상태입니다."),
   ALREADY_REGISTER_PRODUCT(400, "이미 등록된 상품입니다."),
   NOT_FOUND_PRODUCT(400, "존재하지 않는 상품입니다."),
-  NOT_FOUND_ARTIST(400, "존재하지 않는 아티스트입니다.");
+  NOT_FOUND_ARTIST(400, "존재하지 않는 아티스트입니다."),
+  S3_DELETE_FAIL(400, "이미지 삭제를 실패하였습니다.");
 
   // Unathorized 401
 
