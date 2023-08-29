@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -13,14 +15,14 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({CustomException.class})
   public ResponseEntity<?> customExceptionHandler(CustomException e) {
     log.error(
-        "errorCode: {}, path: {}, message",
+        "time:{}, errorCode: {}, message: {}",
+        LocalDateTime.now(),
         e.getCustomErrorCode().getCode(),
-        e.getCustomErrorCode().getPath(),
         e.getCustomErrorCode().getMessage());
 
     return new ResponseEntity<>(
         ErrorDetails.builder()
-            .path(e.getCustomErrorCode().getPath())
+            .time(LocalDateTime.now())
             .code(e.getCustomErrorCode().getCode())
             .message(e.getCustomErrorCode().getMessage())
             .build(),
