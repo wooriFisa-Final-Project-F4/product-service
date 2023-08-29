@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class AwsConfig {  // 설정 값 등록 파일
+public class AwsConfig { // 설정 값 등록 파일
 
   @Value("${cloud.aws.credentials.access-key}")
   private String accessKey;
@@ -24,10 +24,10 @@ public class AwsConfig {  // 설정 값 등록 파일
   @Bean
   public AmazonS3Client s3Client() {
     AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
-    return (AmazonS3Client) AmazonS3ClientBuilder
-        .standard()
-        .withCredentials(new AWSStaticCredentialsProvider(credentials))
-        .withRegion(region)
-        .build();
+    return (AmazonS3Client)
+        AmazonS3ClientBuilder.standard()
+            .withCredentials(new AWSStaticCredentialsProvider(credentials))
+            .withRegion(region)
+            .build();
   }
 }
