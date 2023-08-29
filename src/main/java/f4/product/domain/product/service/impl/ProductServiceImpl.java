@@ -1,5 +1,6 @@
 package f4.product.domain.product.service.impl;
 
+import f4.product.domain.product.constant.AuctionStatus;
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.persist.entity.Product;
@@ -79,9 +80,23 @@ public class ProductServiceImpl implements ProductService {
 
   private Product convertDtoToProduct(ProductSaveRequestDto requestDto) {
     String identifier = generateIdentifier(requestDto);
-    Product product = modelMapper.map(requestDto, Product.class);
-    product.setIdentifier(identifier);
-    return product;
+    return Product.builder()
+        .name(requestDto.getName())
+        .identifier(identifier)
+        .artist(requestDto.getArtist())
+        .country(requestDto.getCountry())
+        .description(requestDto.getDescription())
+        .completionDate(requestDto.getCompletionDate())
+        .size(requestDto.getSize())
+        .medium(requestDto.getMedium())
+        .theme(requestDto.getTheme())
+        .style(requestDto.getStyle())
+        .technique(requestDto.getTechnique())
+        .auctionPrice(requestDto.getAuctionPrice())
+        .auctionStatus(AuctionStatus.of(requestDto.getAuctionStatus()))
+        .auctionStartTime(requestDto.getAuctionStartTime())
+        .auctionEndTime(requestDto.getAuctionEndTime())
+        .build();
   }
 
   private String generateIdentifier(ProductSaveRequestDto requestDto) {
@@ -89,7 +104,18 @@ public class ProductServiceImpl implements ProductService {
   }
 
   private ProductReadResponseDto convertProductToDto(Product product) {
-    return modelMapper.map(product, ProductReadResponseDto.class);
+    ProductReadResponseDto dto = modelMapper.map(product, ProductReadResponseDto.class);
+
+    // 이미지 URL들을 추출하여 List에 추가
+    List<String> images =
+        product
+            .getImages()
+            .stream()
+            .map(ProductImage::getImageUrl)
+            .collect(Collectors.toList());
+
+    dto.setImages(images);
+    return dto;
   }
 
   private List<ProductReadResponseDto> findProductsOrThrow(
