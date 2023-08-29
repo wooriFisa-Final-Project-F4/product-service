@@ -2,6 +2,7 @@ package f4.product.domain.product.service.impl;
 
 import f4.product.domain.product.constant.AuctionStatus;
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
+import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.persist.entity.Product;
 import f4.product.domain.product.persist.entity.ProductImage;
@@ -143,9 +144,71 @@ public class ProductServiceImpl implements ProductService {
         });
   }
 
+
   // 상품 이미지 Entity 생성
   private ProductImage createProductImage(Product product, String url) {
     return ProductImage.builder().product(product).imageUrl(url).build();
+  }
+  @Override
+  @Transactional
+  public void updateProduct(Long productId, ProductUpdateRequestDto updateDto) {
+    Product product = findProductOrThrow(productId);
+
+    // 이미지 삭제 여부에 따른 처리
+    if (updateDto.isDeleteExistingImages()) {
+      // 기존 이미지를 S3에서 삭제하고 상품 이미지 테이블에서 삭제
+      deleteProductImages(product.getImages());
+      productImageRepository.deleteAll(product.getImages());
+      // 이미지와 관련된 정보를 초기화
+      product.getImages().clear();
+    }
+
+    // 나머지 필드 업데이트 처리
+    updateProductFields(product, updateDto);
+
+    // 새 이미지 업로드 및 상품 이미지 테이블에 저장
+    saveProductImages(product, updateDto.getNewImages());
+
+    // 상품 정보 업데이트
+    productRepository.save(product);
+  }
+
+  // 새로운 이미지 업로드 및 저장
+  private void saveNewImages(Product product, List<MultipartFile> newImages) {
+    newImages.forEach(
+        image -> {
+          String url = s3Service.uploadFile(image);
+          ProductImage productImage = createProductImage(product, url);
+          productImageRepository.save(productImage);
+        });
+  }
+
+  // 기존 이미지 삭제
+  private void deleteExistingImages(List<ProductImage> images) {
+    for (ProductImage image : images) {
+      String imageUrl = image.getImageUrl();
+      s3Service.deleteFile(imageUrl);
+    }
+  }
+  // 기존 상품 정보 수정
+  private void updateProductFields(Product product, ProductUpdateRequestDto updateDto) {
+    // 나머지 필드 업데이트 처리
+    product.setName(updateDto.getName());
+    product.setArtist(updateDto.getArtist());
+    product.setCountry(updateDto.getCountry());
+    product.setDescription(updateDto.getDescription());
+    product.setCompletionDate(updateDto.getCompletionDate());
+    product.setSize(updateDto.getSize());
+    product.setMedium(updateDto.getMedium());
+    product.setTheme(updateDto.getTheme());
+    product.setStyle(updateDto.getStyle());
+    product.setTechnique(updateDto.getTechnique());
+    product.setAuctionPrice(updateDto.getAuctionPrice());
+    product.setAuctionStatus(AuctionStatus.of(updateDto.getAuctionStatus()));
+    product.setAuctionStartTime(updateDto.getAuctionStartTime());
+    product.setAuctionEndTime(updateDto.getAuctionEndTime());
+
+    //새 이미지를 업로드 할 때만 이미지 관련 필드를 처리함
   }
   @Override
   @Transactional
@@ -157,6 +220,8 @@ public class ProductServiceImpl implements ProductService {
 
     // 상품 이미지 데이터베이스에서 삭제
     productImageRepository.deleteAll(product.getImages());
+    // 이미지와 관련된 정보를 초기화
+    product.getImages().clear();
 
     // 상품 정보 데이터베이스에서 삭제
     productRepository.delete(product);
