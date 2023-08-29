@@ -12,7 +12,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AccessLevel;
@@ -28,7 +27,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "Product")
+@Table(name = "product")
 public class Product {
 
   @Id
@@ -56,6 +55,9 @@ public class Product {
 
   @Column(name = "size", nullable = false)
   private String size;
+
+  @Column(name = "medium, nullable = false")
+  private String medium;
 
   @Column(name = "theme", nullable = false)
   private String theme;
