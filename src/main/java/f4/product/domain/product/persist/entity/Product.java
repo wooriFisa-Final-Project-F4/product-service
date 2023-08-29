@@ -56,7 +56,7 @@ public class Product {
   @Column(name = "size", nullable = false)
   private String size;
 
-  @Column(name = "medium, nullable = false")
+  @Column(name = "medium", nullable = false)
   private String medium;
 
   @Column(name = "theme", nullable = false)
@@ -85,5 +85,5 @@ public class Product {
   private String bidUserId;
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "product")
-  private List<ProductImage> images = new ArrayList<>();
+  private List<ProductImage> images;
 }
