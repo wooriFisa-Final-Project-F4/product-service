@@ -27,29 +27,36 @@ public class ProductController {
     productService.saveProduct(requestDto);
     return new ResponseEntity<>("상품 등록이 완료되었습니다.", HttpStatus.OK);
   }
+
   @GetMapping
-  public ResponseEntity<List<ProductReadResponseDto>> readAllProduct(){
-    List<ProductReadResponseDto> products = productService.readAllProducts();
+  public ResponseEntity<List<ProductReadResponseDto>> findAll() {
+    List<ProductReadResponseDto> products = productService.findAll();
     return new ResponseEntity<>(products, HttpStatus.OK);
   }
+
   @GetMapping("/{productId}")
-  public ResponseEntity<ProductReadResponseDto> getProductById(@PathVariable Long productId) {
-    ProductReadResponseDto productDto = productService.readProductById(productId);
-    return ResponseEntity.ok(productDto);
+  public ResponseEntity<ProductReadResponseDto> findById(@PathVariable Long productId) {
+    ProductReadResponseDto response = productService.findById(productId);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
+
   @GetMapping("/by-name")
-  public ResponseEntity<List<ProductReadResponseDto>> getProductsByName(@RequestParam String name) {
-    List<ProductReadResponseDto> products = productService.readProductsByName(name);
-    return ResponseEntity.ok(products);
+  public ResponseEntity<List<ProductReadResponseDto>> findByName(@RequestParam String name) {
+    List<ProductReadResponseDto> products = productService.findByName(name);
+    return new ResponseEntity<>(products, HttpStatus.OK);
   }
+
   @GetMapping("/by-artist")
-  public ResponseEntity<List<ProductReadResponseDto>> getProductsByArtist(@RequestParam String artist) {
-    List<ProductReadResponseDto> products = productService.readProductsByArtist(artist);
-    return ResponseEntity.ok(products);
+  public ResponseEntity<List<ProductReadResponseDto>> findByArtist(@RequestParam String artist) {
+    List<ProductReadResponseDto> products = productService.findByArtist(artist);
+    return new ResponseEntity<>(products, HttpStatus.OK);
   }
+
   @GetMapping("/search")
-  public ResponseEntity<List<ProductReadResponseDto>> searchProductsByCategory(@RequestParam String category, @RequestParam String keyword) {
-    List<ProductReadResponseDto> products = productService.searchProductsByCategory(category, keyword);
-    return ResponseEntity.ok(products);
+  public ResponseEntity<List<ProductReadResponseDto>> findByMediumAndKeyword(
+      @RequestParam String category, @RequestParam String keyword) {
+    List<ProductReadResponseDto> products =
+        productService.findByMediumAndKeyword(category, keyword);
+    return new ResponseEntity<>(products, HttpStatus.OK);
   }
 }

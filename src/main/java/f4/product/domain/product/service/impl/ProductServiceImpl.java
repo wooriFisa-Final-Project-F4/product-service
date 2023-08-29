@@ -1,6 +1,5 @@
 package f4.product.domain.product.service.impl;
 
-import f4.product.domain.product.constant.AuctionStatus;
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.persist.entity.Product;
@@ -11,17 +10,15 @@ import f4.product.domain.product.service.ProductService;
 import f4.product.global.constant.CustomErrorCode;
 import f4.product.global.exception.CustomException;
 import f4.product.global.service.S3Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.data.domain.Sort;
 
 @Service
 @RequiredArgsConstructor
@@ -35,155 +32,93 @@ public class ProductServiceImpl implements ProductService {
   @Override
   @Transactional
   public void saveProduct(ProductSaveRequestDto requestDto) {
-    String identifier = requestDto.getArtist() + requestDto.getName();
 
-    productRepository.findByIdentifier(identifier)
-        .ifPresent(
-            data -> {
-              throw new CustomException(CustomErrorCode.ALREADY_REGISTER_PRODUCT);
-            });
+    validateUniqueProductIdentifier(requestDto);
 
-    /* ProductSaveRequestDto를 Product객체로 변환함*/
-    Product product = productBuild(requestDto, identifier);
-    /* 데이터베이스에 저장*/
-    Product save = productRepository.save(product);
+    Product product = convertDtoToProduct(requestDto);
 
-    for (MultipartFile image : requestDto.getImages()) {
-      String url = s3Service.uploadFile(image);
-      productImageRepository.save(productImageBuild(save, url));
+    Product savedProduct = productRepository.save(product);
+
+    saveProductImages(savedProduct, requestDto.getImages());
+  }
+
+  @Override
+  public List<ProductReadResponseDto> findAll() {
+    return productRepository.findAll().stream()
+        .map(this::convertProductToDto)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public ProductReadResponseDto findById(Long productId) {
+    Product product = findProductOrThrow(productId);
+    return convertProductToDto(product);
+  }
+
+  @Override
+  public List<ProductReadResponseDto> findByName(String name) {
+    return findProductsOrThrow(productRepository.findByName(name));
+  }
+
+  @Override
+  public List<ProductReadResponseDto> findByArtist(String artist) {
+    return findProductsOrThrow(productRepository.findByArtist(artist));
+  }
+
+  @Override
+  public List<ProductReadResponseDto> findByMediumAndKeyword(String medium, String keyword) {
+    return findProductsOrThrow(productRepository.findByMediumAndKeyword(medium, keyword));
+  }
+
+  private void validateUniqueProductIdentifier(ProductSaveRequestDto requestDto) {
+    String identifier = generateIdentifier(requestDto);
+    if (productRepository.findByIdentifier(identifier).isPresent()) {
+      throw new CustomException(CustomErrorCode.ALREADY_REGISTER_PRODUCT);
     }
   }
-  //모든 작품 조회
-  // Product 엔티티를 ProductReadResponseDto로 변환하여 리스트로 반환
-  @Override
-  public List<ProductReadResponseDto> readAllProducts() {
-    List<Product> products = productRepository.findAll();
-    return products.stream()
-        .map(this::convertToResponseDto)
+
+  private Product convertDtoToProduct(ProductSaveRequestDto requestDto) {
+    String identifier = generateIdentifier(requestDto);
+    Product product = modelMapper.map(requestDto, Product.class);
+    product.setIdentifier(identifier);
+    return product;
+  }
+
+  private String generateIdentifier(ProductSaveRequestDto requestDto) {
+    return requestDto.getArtist() + requestDto.getName();
+  }
+
+  private ProductReadResponseDto convertProductToDto(Product product) {
+    return modelMapper.map(product, ProductReadResponseDto.class);
+  }
+
+  private List<ProductReadResponseDto> findProductsOrThrow(
+      Optional<List<Product>> optionalProducts) {
+    return optionalProducts
+        .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT))
+        .stream()
+        .map(this::convertProductToDto)
         .collect(Collectors.toList());
   }
 
-  private ProductReadResponseDto convertToResponseDto(Product product) {
-    ProductReadResponseDto responseDto = modelMapper.map(product, ProductReadResponseDto.class);
-
-    // ProductImage 엔티티 정보를 ProductReadResponseDto에 추가
-    List<String> imageUrls = product.getImages().stream()
-        .map(ProductImage::getImageUrl)
-        .collect(Collectors.toList());
-    responseDto.setImageUrl(imageUrls);
-    responseDto.setArtist(product.getArtist());
-    responseDto.setCountry(product.getCountry());
-    responseDto.setDescription(product.getDescription());
-    responseDto.setCompletionDate(product.getCompletionDate());
-    responseDto.setSize(product.getSize());
-    responseDto.setTheme(product.getTheme());
-    responseDto.setStyle(product.getStyle());
-    responseDto.setTechnique(product.getTechnique());
-    responseDto.setAuctionPrice(product.getAuctionPrice());
-    responseDto.setAuctionStatus(product.getAuctionStatus());
-    responseDto.setAuctionStartTime(product.getAuctionStartTime());
-    responseDto.setAuctionEndTime(product.getAuctionEndTime());
-
-    return responseDto;
-
-  }
-
-  // ProductImage 엔티티를 생성
-  private static ProductImage productImageBuild(Product save, String url) {
-    return ProductImage.builder()
-        .product(save)
-        .imageUrl(url)
-        .build();
-  }
-  @Override
-  public ProductReadResponseDto readProductById(Long productId) {
-    Product product = getProductById(productId);
-    return convertToResponseDto(product);
-  }
-
-  private Product getProductById(Long productId) {
-    return productRepository.findById(productId)
+  private Product findProductOrThrow(Long id) {
+    return productRepository
+        .findById(id)
         .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
   }
 
-  @Override
-  public List<ProductReadResponseDto> readProductsByName(String productName) {
-    Optional<Product> products = getProductsByName(productName);
-    if (products.isEmpty()) {
-      throw new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT);
-    }
-    return products.stream()
-        .map(this::convertToResponseDto)
-        .collect(Collectors.toList());
+  // 각 이미지를 S3에 저장하고, 그 URL을 상품 이미지 테이블에 저장
+  private void saveProductImages(Product product, List<MultipartFile> images) {
+    images.forEach(
+        image -> {
+          String url = s3Service.uploadFile(image);
+          ProductImage productImage = createProductImage(product, url);
+          productImageRepository.save(productImage);
+        });
   }
 
-  private Optional<Product> getProductsByName(String name) {
-    return productRepository.findByName(name);
-  }
-
-  @Override
-  public List<ProductReadResponseDto> readProductsByArtist(String artist) {
-    Optional<Product> products = getProductsByArtist(artist);
-
-    if (products.isEmpty()) {
-      throw new CustomException(CustomErrorCode.NOT_FOUND_ARTIST);
-    }
-
-    return products.stream()
-        .map(this::convertToResponseDto)
-        .collect(Collectors.toList());
-  }
-
-  private Optional<Product> getProductsByArtist(String artist) {
-    return productRepository.findByArtist(artist);
-  }
-
-  @Override
-  public List<ProductReadResponseDto> searchProductsByCategory(String category, String keyword) {
-    Specification<Product> spec = Specification.where(null);
-
-    if ("theme".equals(category)) {
-      spec = spec.and((root, query, criteriaBuilder) ->
-          criteriaBuilder.equal(root.get("theme"), keyword));
-    } else if ("style".equals(category)) {
-      spec = spec.and((root, query, criteriaBuilder) ->
-          criteriaBuilder.equal(root.get("style"), keyword));
-    } else if ("technique".equals(category)) {
-      spec = spec.and((root, query, criteriaBuilder) ->
-          criteriaBuilder.equal(root.get("technique"), keyword));
-    } else if ("mediums".equals(category)) {
-      spec = spec.and((root, query, criteriaBuilder) ->
-          criteriaBuilder.equal(root.get("mediums"), keyword));
-    } else {
-      throw new IllegalArgumentException("Invalid category: " + category);
-    }
-
-    Sort sort = Sort.by(Sort.Direction.DESC, "name"); // 예시로 name 필드를 기준으로 내림차순 정렬
-
-    List<Product> products = productRepository.findAll(spec, sort);
-    return products.stream()
-        .map(product -> modelMapper.map(product, ProductReadResponseDto.class))
-        .collect(Collectors.toList());
-  }
-
-  /* ProductSaveRequestDto를 Product객체로 변환함*/
-  private static Product productBuild(ProductSaveRequestDto requestDto, String identifier) {
-    // 고유식별자 생성
-    return Product.builder()
-        .name(requestDto.getName())
-        .identifier(identifier)
-        .artist(requestDto.getArtist())
-        .country(requestDto.getCountry())
-        .description(requestDto.getDescription())
-        .completionDate(requestDto.getCompletionDate())
-        .size(requestDto.getSize())
-        .theme(requestDto.getTheme())
-        .style(requestDto.getStyle())
-        .technique(requestDto.getTechnique())
-        .auctionPrice(requestDto.getAuctionPrice())
-        .auctionStatus(AuctionStatus.of(requestDto.getAuctionStatus()))
-        .auctionStartTime(requestDto.getAuctionStartTime())
-        .auctionEndTime(requestDto.getAuctionEndTime())
-        .build();
+  // 상품 이미지 Entity 생성
+  private ProductImage createProductImage(Product product, String url) {
+    return ProductImage.builder().product(product).imageUrl(url).build();
   }
 }
