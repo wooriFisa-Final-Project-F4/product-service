@@ -8,12 +8,13 @@ public interface ProductService {
 
   void saveProduct(ProductSaveRequestDto product);
 
-  List<ProductReadResponseDto> readAllProducts();
-  ProductReadResponseDto readProductById(Long productId);
+  List<ProductReadResponseDto> findAll();
 
-  List<ProductReadResponseDto> readProductsByName(String name);
+  ProductReadResponseDto findById(Long productId);
 
-  List<ProductReadResponseDto> readProductsByArtist(String artist);
+  List<ProductReadResponseDto> findByName(String name);
 
-  List<ProductReadResponseDto> searchProductsByCategory(String category, String keyword);
+  List<ProductReadResponseDto> findByArtist(String artist);
+
+  List<ProductReadResponseDto> findByMediumAndKeyword(String theme, String keyword);
 }

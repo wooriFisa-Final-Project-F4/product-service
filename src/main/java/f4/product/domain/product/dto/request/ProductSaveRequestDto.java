@@ -32,8 +32,10 @@ public class ProductSaveRequestDto implements Serializable {
   private String mediums;
   private String auctionPrice;
   private String auctionStatus;
+
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   private LocalDateTime auctionStartTime;
+
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   private LocalDateTime auctionEndTime;
 }

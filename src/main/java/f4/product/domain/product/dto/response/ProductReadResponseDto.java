@@ -25,6 +25,7 @@ public class ProductReadResponseDto implements Serializable {
   private String description;
   private String completionDate;
   private String size;
+  private String medium;
   private String theme;
   private String style;
   private String technique;
