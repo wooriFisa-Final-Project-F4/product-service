@@ -2,6 +2,7 @@ package f4.product.domain.product.service;
 
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
 import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
+import f4.product.domain.product.dto.response.ForEmailingUserDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -23,4 +24,6 @@ public interface ProductService {
   void updateProduct(Long productId, ProductUpdateRequestDto updateDto);
 
   void deleteProduct(Long productId);
+
+  List<ForEmailingUserDto> getProductsToBeEnded();
 }

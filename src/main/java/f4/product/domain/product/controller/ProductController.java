@@ -2,6 +2,7 @@ package f4.product.domain.product.controller;
 
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
 import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
+import f4.product.domain.product.dto.response.ForEmailingUserDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.service.ProductService;
 import java.util.List;
@@ -78,4 +79,10 @@ public class ProductController {
     productService.deleteProduct(productId);
     return ResponseEntity.ok("상품이 삭제되었습니다.");
   }
+//  test를 위해 작성
+//  @GetMapping("/expired-but-ongoing")
+//  public List<ForEmailingUserDto> getProductsToBeEnded() {
+//    return productService.getProductsToBeEnded();
+//  }
+
 }
