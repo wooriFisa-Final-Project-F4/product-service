@@ -1,6 +1,7 @@
 package f4.product.domain.product.controller;
 
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
+import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.service.ProductService;
 import java.util.List;
@@ -63,6 +64,15 @@ public class ProductController {
         productService.findByMediumAndKeyword(category, keyword);
     return new ResponseEntity<>(products, HttpStatus.OK);
   }
+
+  @PutMapping("/{productId}")
+  public ResponseEntity<String> updateProduct(
+      @PathVariable Long productId,
+      @ModelAttribute ProductUpdateRequestDto updateRequestDto) {
+    productService.updateProduct(productId, updateRequestDto);
+    return ResponseEntity.ok("상품이 수정되었습니다.");
+  }
+
   @DeleteMapping("/{productId}")
   public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
     productService.deleteProduct(productId);
