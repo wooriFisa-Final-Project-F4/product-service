@@ -82,7 +82,7 @@ public class Product {
   private LocalDateTime auctionEndTime;
 
   @Column(name = "bid_user_id", nullable = true)
-  private String bidUserId;
+  private Long bidUserId;
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "product")
   private List<ProductImage> images;

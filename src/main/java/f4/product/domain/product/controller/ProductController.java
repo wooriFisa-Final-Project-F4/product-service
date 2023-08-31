@@ -2,6 +2,7 @@ package f4.product.domain.product.controller;
 
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
 import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
+import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.service.ProductService;
 import java.util.List;
@@ -33,7 +34,7 @@ public class ProductController {
     return new ResponseEntity<>("상품 등록이 완료되었습니다.", HttpStatus.OK);
   }
 
-  @GetMapping
+  @GetMapping("/findAll")
   public ResponseEntity<List<ProductReadResponseDto>> findAll() {
     List<ProductReadResponseDto> products = productService.findAll();
     return new ResponseEntity<>(products, HttpStatus.OK);
@@ -78,4 +79,13 @@ public class ProductController {
     productService.deleteProduct(productId);
     return ResponseEntity.ok("상품이 삭제되었습니다.");
   }
+  @GetMapping
+  public List<FeignProductDto> getProductsToBeEnded() {
+    return productService.getProductsToBeEnded();
+  }
+  @PutMapping
+  FeignProductDto auctionStatusUpdate(long productId, String status){
+    return productService.auctionStatusUpdate(productId, status);
+  }
+
 }

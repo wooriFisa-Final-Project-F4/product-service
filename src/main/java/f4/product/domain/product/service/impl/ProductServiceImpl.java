@@ -3,6 +3,7 @@ package f4.product.domain.product.service.impl;
 import f4.product.domain.product.constant.AuctionStatus;
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
 import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
+import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.persist.entity.Product;
 import f4.product.domain.product.persist.entity.ProductImage;
@@ -12,7 +13,7 @@ import f4.product.domain.product.service.ProductService;
 import f4.product.global.constant.CustomErrorCode;
 import f4.product.global.exception.CustomException;
 import f4.product.global.service.S3Service;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -149,6 +150,7 @@ public class ProductServiceImpl implements ProductService {
   private ProductImage createProductImage(Product product, String url) {
     return ProductImage.builder().product(product).imageUrl(url).build();
   }
+
   @Override
   @Transactional
   public void updateProduct(Long productId, ProductUpdateRequestDto updateDto) {
@@ -190,6 +192,7 @@ public class ProductServiceImpl implements ProductService {
       s3Service.deleteFile(imageUrl);
     }
   }
+
   // 기존 상품 정보 수정
   private void updateProductFields(Product product, ProductUpdateRequestDto updateDto) {
     // 나머지 필드 업데이트 처리
@@ -210,6 +213,7 @@ public class ProductServiceImpl implements ProductService {
 
     //새 이미지를 업로드 할 때만 이미지 관련 필드를 처리함
   }
+
   @Override
   @Transactional
   public void deleteProduct(Long productId) {
@@ -227,11 +231,60 @@ public class ProductServiceImpl implements ProductService {
     productRepository.delete(product);
   }
 
+
   // 이미지를 S3에서 삭제
   private void deleteProductImages(List<ProductImage> images) {
     for (ProductImage image : images) {
       String imageUrl = image.getImageUrl();
       s3Service.deleteFile(imageUrl);
     }
+  }
+  @Override
+  public List<FeignProductDto> getProductsToBeEnded() {
+    LocalDateTime now = LocalDateTime.now();
+
+    List<Product> products = productRepository.findCompletedAuctionsInProgress(now);
+
+    return products.stream()
+        .map(product -> convertProductToFeignProductDto(product))
+        .collect(Collectors.toList());
+  }
+  public FeignProductDto auctionStatusUpdate(long productId, String status) {
+    Product product = productRepository.findById(productId)
+        .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
+
+    if ("PROGRESS".equals(status) && isAuctionEndTimePassed(product)) {
+      product.setAuctionStatus(AuctionStatus.valueOf("END"));
+      productRepository.save(product);
+    }
+
+    return convertProductToFeignProductDto(product);
+  }
+
+  private boolean isAuctionEndTimePassed(Product product) {
+    LocalDateTime now = LocalDateTime.now();
+    return now.isAfter(product.getAuctionEndTime());
+  }
+
+  private FeignProductDto convertProductToFeignProductDto(Product product) {
+    String imageUrl = getProductImageUrl(product);
+
+    return FeignProductDto.builder()
+        .id(product.getId())
+        .name(product.getName())
+        .image(imageUrl)
+        .artist(product.getArtist())
+        .auctionPrice(product.getAuctionPrice())
+        .auctionStatus(String.valueOf(product.getAuctionStatus()))
+        .auctionEndTime(product.getAuctionEndTime())
+        .bidUserId(product.getBidUserId() != null ? product.getBidUserId() : 0)
+        .build();
+  }
+
+  private String getProductImageUrl(Product product) {
+    if (!product.getImages().isEmpty()) {
+      return product.getImages().get(0).getImageUrl();
+    }
+    return null;
   }
 }
