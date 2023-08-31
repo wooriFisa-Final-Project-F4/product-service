@@ -25,5 +25,5 @@ public interface ProductService {
   void deleteProduct(Long productId);
 
   List<FeignProductDto> getProductsToBeEnded();
-  FeignProductDto auctionStatusUpdate(long productId, String status);
+  FeignProductDto auctionStatusUpdate(long productId);
 }

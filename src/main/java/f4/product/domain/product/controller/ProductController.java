@@ -84,8 +84,8 @@ public class ProductController {
     return productService.getProductsToBeEnded();
   }
   @PutMapping
-  FeignProductDto auctionStatusUpdate(long productId, String status){
-    return productService.auctionStatusUpdate(productId, status);
+  FeignProductDto auctionStatusUpdate(long productId){
+    return productService.auctionStatusUpdate(productId);
   }
 
 }

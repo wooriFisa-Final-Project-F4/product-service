@@ -249,11 +249,11 @@ public class ProductServiceImpl implements ProductService {
         .map(product -> convertProductToFeignProductDto(product))
         .collect(Collectors.toList());
   }
-  public FeignProductDto auctionStatusUpdate(long productId, String status) {
+  public FeignProductDto auctionStatusUpdate(long productId) {
     Product product = productRepository.findById(productId)
         .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
 
-    if ("PROGRESS".equals(status) && isAuctionEndTimePassed(product)) {
+    if ("PROGRESS".equals(product.getAuctionStatus())&& isAuctionEndTimePassed(product)) {
       product.setAuctionStatus(AuctionStatus.valueOf("END"));
       productRepository.save(product);
     }
