@@ -2,6 +2,7 @@ package f4.product.domain.product.service;
 
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
 import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
+import f4.product.domain.product.dto.response.AuctionTimeStatusDto;
 import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import java.util.List;
@@ -26,4 +27,6 @@ public interface ProductService {
 
   List<FeignProductDto> getProductsToBeEnded();
   FeignProductDto auctionStatusUpdate(long productId);
+
+  AuctionTimeStatusDto getStatus(long id);
 }

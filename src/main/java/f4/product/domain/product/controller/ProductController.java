@@ -2,6 +2,7 @@ package f4.product.domain.product.controller;
 
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
 import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
+import f4.product.domain.product.dto.response.AuctionTimeStatusDto;
 import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.service.ProductService;
@@ -87,5 +88,9 @@ public class ProductController {
   FeignProductDto auctionStatusUpdate(long productId){
     return productService.auctionStatusUpdate(productId);
   }
+  @GetMapping("/status/{id}")
+  public AuctionTimeStatusDto getStatus(@PathVariable long id){
+    return productService.getStatus(id);
+  };
 
 }
