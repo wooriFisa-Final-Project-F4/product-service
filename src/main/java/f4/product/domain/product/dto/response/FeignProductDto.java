@@ -13,10 +13,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ForEmailingUserDto implements Serializable {
+public class FeignProductDto implements Serializable {
   private long id;
   private String name;
-  private String imageUrl;
+  private String image;
   private String artist;
   private String auctionPrice;
   private String auctionStatus;

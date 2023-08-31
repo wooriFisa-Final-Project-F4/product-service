@@ -3,7 +3,7 @@ package f4.product.domain.product.service.impl;
 import f4.product.domain.product.constant.AuctionStatus;
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
 import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
-import f4.product.domain.product.dto.response.ForEmailingUserDto;
+import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.persist.entity.Product;
 import f4.product.domain.product.persist.entity.ProductImage;
@@ -240,24 +240,39 @@ public class ProductServiceImpl implements ProductService {
     }
   }
   @Override
-
-  public List<ForEmailingUserDto> getProductsToBeEnded() {
+  public List<FeignProductDto> getProductsToBeEnded() {
     LocalDateTime now = LocalDateTime.now();
 
     List<Product> products = productRepository.findCompletedAuctionsInProgress(now);
 
     return products.stream()
-        .map(product -> convertProductToForEmailingUserDto(product))
+        .map(product -> convertProductToFeignProductDto(product))
         .collect(Collectors.toList());
   }
+  public FeignProductDto auctionStatusUpdate(long productId, String status) {
+    Product product = productRepository.findById(productId)
+        .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
 
-  private ForEmailingUserDto convertProductToForEmailingUserDto(Product product) {
+    if ("PROGRESS".equals(status) && isAuctionEndTimePassed(product)) {
+      product.setAuctionStatus(AuctionStatus.valueOf("END"));
+      productRepository.save(product);
+    }
+
+    return convertProductToFeignProductDto(product);
+  }
+
+  private boolean isAuctionEndTimePassed(Product product) {
+    LocalDateTime now = LocalDateTime.now();
+    return now.isAfter(product.getAuctionEndTime());
+  }
+
+  private FeignProductDto convertProductToFeignProductDto(Product product) {
     String imageUrl = getProductImageUrl(product);
 
-    return ForEmailingUserDto.builder()
+    return FeignProductDto.builder()
         .id(product.getId())
         .name(product.getName())
-        .imageUrl(imageUrl)
+        .image(imageUrl)
         .artist(product.getArtist())
         .auctionPrice(product.getAuctionPrice())
         .auctionStatus(String.valueOf(product.getAuctionStatus()))
