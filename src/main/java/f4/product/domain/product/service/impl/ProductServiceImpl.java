@@ -3,6 +3,7 @@ package f4.product.domain.product.service.impl;
 import f4.product.domain.product.constant.AuctionStatus;
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
 import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
+import f4.product.domain.product.dto.response.AuctionTimeStatusDto;
 import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.persist.entity.Product;
@@ -253,12 +254,25 @@ public class ProductServiceImpl implements ProductService {
     Product product = productRepository.findById(productId)
         .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
 
-    if ("PROGRESS".equals(product.getAuctionStatus())&& isAuctionEndTimePassed(product)) {
+    if ("PROGRESS".equals(product.getAuctionStatus()) && isAuctionEndTimePassed(product)) {
       product.setAuctionStatus(AuctionStatus.valueOf("END"));
       productRepository.save(product);
     }
 
     return convertProductToFeignProductDto(product);
+  }
+  @Override
+  public AuctionTimeStatusDto getStatus(long id) {
+    Product product = productRepository.findById(id)
+        .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
+
+    AuctionTimeStatusDto statusDto = AuctionTimeStatusDto.builder()
+        .auctionStatus(product.getAuctionStatus().toString())
+        .auctionStartTime(product.getAuctionStartTime())
+        .auctionEndTime(product.getAuctionEndTime())
+        .build();
+
+    return statusDto;
   }
 
   private boolean isAuctionEndTimePassed(Product product) {
