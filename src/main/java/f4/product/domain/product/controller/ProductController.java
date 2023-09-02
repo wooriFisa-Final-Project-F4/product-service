@@ -90,18 +90,18 @@ public class ProductController {
   }
 
   @PutMapping
-  FeignProductDto auctionStatusUpdate(long productId) {
+  FeignProductDto auctionStatusUpdate(Long productId) {
     return productService.auctionStatusUpdate(productId);
   }
 
   @GetMapping("/status/{id}")
-  public AuctionTimeStatusDto getStatus(@PathVariable long id) {
+  public AuctionTimeStatusDto getStatus(@PathVariable Long id) {
     return productService.getStatus(id);
   }
 
   @PostMapping("/favorite")
   public ResponseEntity<String> saveFavorite(
-      @RequestHeader("user_id") Long userId, //String 으로 전환???
+      @RequestHeader("userId") Long userId, //String 으로 전환???
       @RequestParam Long productId) {
     favoriteService.saveFavorite(userId, productId);
     return ResponseEntity.ok("관심상품이 등록되었습니다.");

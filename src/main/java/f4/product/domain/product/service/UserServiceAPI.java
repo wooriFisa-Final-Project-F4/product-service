@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface UserServiceAPI {
 
   @GetMapping("/user/v1/{userId}")
-  FeignUserDto getUserById(@RequestHeader("user_id") Long userId);
+  FeignUserDto getUserById(@RequestHeader("userId") Long userId);
 
 
 }
