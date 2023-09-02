@@ -15,7 +15,8 @@ public enum CustomErrorCode {
   NOT_FOUND_PRODUCT(400, "존재하지 않는 상품입니다."),
   NOT_FOUND_ARTIST(400, "존재하지 않는 아티스트입니다."),
   S3_DELETE_FAIL(400, "이미지 삭제를 실패하였습니다."),
-  INVALID_AUCTION_STATUS_UPDATE(400, "상품의 경매 상태 변경을 실패하였습니다.");
+  INVALID_AUCTION_STATUS_UPDATE(400, "상품의 경매 상태 변경을 실패하였습니다."),
+  USER_NOT_FOUND(400, "존재하지 않는 유저입니다.");
 
   // Unathorized 401
 
