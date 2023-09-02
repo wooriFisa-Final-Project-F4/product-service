@@ -5,6 +5,7 @@ import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
 import f4.product.domain.product.dto.response.AuctionTimeStatusDto;
 import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
+import f4.product.domain.product.persist.entity.Product;
 import java.util.List;
 
 public interface ProductService {
@@ -26,7 +27,10 @@ public interface ProductService {
   void deleteProduct(Long productId);
 
   List<FeignProductDto> getProductsToBeEnded();
-  FeignProductDto auctionStatusUpdate(long productId);
 
-  AuctionTimeStatusDto getStatus(long id);
+  FeignProductDto auctionStatusUpdate(Long productId);
+
+  AuctionTimeStatusDto getStatus(Long Id);
+
+  Product findProductById(Long productId);
 }

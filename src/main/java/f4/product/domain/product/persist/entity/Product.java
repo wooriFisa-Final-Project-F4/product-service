@@ -86,4 +86,7 @@ public class Product {
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "product")
   private List<ProductImage> images;
+
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "product")
+  private List<Favorite> favorites;
 }

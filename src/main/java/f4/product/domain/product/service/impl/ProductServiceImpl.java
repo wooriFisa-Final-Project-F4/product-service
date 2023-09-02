@@ -240,6 +240,7 @@ public class ProductServiceImpl implements ProductService {
       s3Service.deleteFile(imageUrl);
     }
   }
+
   @Override
   public List<FeignProductDto> getProductsToBeEnded() {
     LocalDateTime now = LocalDateTime.now();
@@ -250,7 +251,9 @@ public class ProductServiceImpl implements ProductService {
         .map(product -> convertProductToFeignProductDto(product))
         .collect(Collectors.toList());
   }
-  public FeignProductDto auctionStatusUpdate(long productId) {
+
+
+  public FeignProductDto auctionStatusUpdate(Long productId) {
     Product product = productRepository.findById(productId)
         .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
 
@@ -261,8 +264,9 @@ public class ProductServiceImpl implements ProductService {
 
     return convertProductToFeignProductDto(product);
   }
+
   @Override
-  public AuctionTimeStatusDto getStatus(long id) {
+  public AuctionTimeStatusDto getStatus(Long id) {
     Product product = productRepository.findById(id)
         .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
 
@@ -273,6 +277,11 @@ public class ProductServiceImpl implements ProductService {
         .build();
 
     return statusDto;
+  }
+
+  public Product findProductById(Long productId) {
+    return productRepository.findById(productId)
+        .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
   }
 
   private boolean isAuctionEndTimePassed(Product product) {
