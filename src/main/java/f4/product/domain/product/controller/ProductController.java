@@ -5,6 +5,7 @@ import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
 import f4.product.domain.product.dto.response.AuctionTimeStatusDto;
 import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
+import f4.product.domain.product.service.FavoriteService;
 import f4.product.domain.product.service.ProductService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
 
   private final ProductService productService;
+  private final FavoriteService favoriteService;
 
   @PostMapping("/save")
   public ResponseEntity<?> saveProduct(@ModelAttribute ProductSaveRequestDto requestDto) {
@@ -80,17 +83,28 @@ public class ProductController {
     productService.deleteProduct(productId);
     return ResponseEntity.ok("상품이 삭제되었습니다.");
   }
+
   @GetMapping
   public List<FeignProductDto> getProductsToBeEnded() {
     return productService.getProductsToBeEnded();
   }
+
   @PutMapping
-  FeignProductDto auctionStatusUpdate(long productId){
+  FeignProductDto auctionStatusUpdate(long productId) {
     return productService.auctionStatusUpdate(productId);
   }
+
   @GetMapping("/status/{id}")
-  public AuctionTimeStatusDto getStatus(@PathVariable long id){
+  public AuctionTimeStatusDto getStatus(@PathVariable long id) {
     return productService.getStatus(id);
-  };
+  }
+
+  @PostMapping("/favorite")
+  public ResponseEntity<String> saveFavorite(
+      @RequestHeader("user_id") Long userId, //String 으로 전환???
+      @RequestParam Long productId) {
+    favoriteService.saveFavorite(userId, productId);
+    return ResponseEntity.ok("관심상품이 등록되었습니다.");
+  }
 
 }
