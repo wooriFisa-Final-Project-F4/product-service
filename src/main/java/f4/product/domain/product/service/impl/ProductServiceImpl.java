@@ -106,7 +106,7 @@ public class ProductServiceImpl implements ProductService {
     return requestDto.getArtist() + requestDto.getName();
   }
 
-  private ProductReadResponseDto convertProductToDto(Product product) {
+  public ProductReadResponseDto convertProductToDto(Product product) {
     ProductReadResponseDto dto = modelMapper.map(product, ProductReadResponseDto.class);
 
     // 이미지 URL들을 추출하여 List에 추가
