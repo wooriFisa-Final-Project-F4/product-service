@@ -111,4 +111,18 @@ public class ProductController {
     List<ProductReadResponseDto> favoriteProducts = favoriteService.readFavoriteProducts(userId);
     return new ResponseEntity<>(favoriteProducts, HttpStatus.OK);
   }
+//  @DeleteMapping("/favorite/{productId}")
+//  public ResponseEntity<String> deleteFavorite(
+//      @RequestHeader("userId") Long userId,
+//      @PathVariable Long productId) {
+//    favoriteService.deleteFavorite(userId, productId);
+//    return ResponseEntity.ok("관심상품이 삭제되었습니다.");
+//  }
+  @DeleteMapping("/favorite/{productId}")
+  public ResponseEntity<String> deleteFavorite(
+      @RequestHeader("userId") Long userId,
+      @RequestParam Long productId) {
+    favoriteService.deleteFavorite(userId, productId);
+    return ResponseEntity.ok("관심상품이 삭제되었습니다.");
+  }
 }
