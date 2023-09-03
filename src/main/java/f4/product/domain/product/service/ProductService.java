@@ -33,4 +33,5 @@ public interface ProductService {
   AuctionTimeStatusDto getStatus(Long Id);
 
   Product findProductById(Long productId);
+
 }

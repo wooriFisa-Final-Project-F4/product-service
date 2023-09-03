@@ -106,5 +106,9 @@ public class ProductController {
     favoriteService.saveFavorite(userId, productId);
     return ResponseEntity.ok("관심상품이 등록되었습니다.");
   }
-
+  @GetMapping("/favorite/{userId}")
+  public ResponseEntity<List<ProductReadResponseDto>> readFavoriteProducts(@RequestHeader("userId") Long userId) {
+    List<ProductReadResponseDto> favoriteProducts = favoriteService.readFavoriteProducts(userId);
+    return new ResponseEntity<>(favoriteProducts, HttpStatus.OK);
+  }
 }
