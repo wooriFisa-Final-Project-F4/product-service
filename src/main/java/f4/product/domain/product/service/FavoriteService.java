@@ -9,4 +9,6 @@ public interface FavoriteService {
 
   List<ProductReadResponseDto> readFavoriteProducts(Long userId);
 
+  void deleteFavorite(Long userId, Long productId);
+
 }

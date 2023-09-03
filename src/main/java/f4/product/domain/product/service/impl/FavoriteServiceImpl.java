@@ -68,6 +68,18 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     return favoriteProducts;
   }
+  @Override
+  public void deleteFavorite(Long userId, Long productId) {
+    // 사용자 정보 가져오기 -> User Service에서 getUserById(userId) 구현 필요
+    FeignUserDto userDto = userServiceAPI.getUserById(userId);
+
+    if (userDto == null) {
+      throw new CustomException(CustomErrorCode.USER_NOT_FOUND);
+    }
+
+    // 관심 상품 삭제
+    favoriteRepository.deleteByUserIdAndProductId(userDto.getUserId(), productId);
+  }
 
 
 }
