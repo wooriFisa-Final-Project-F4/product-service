@@ -15,6 +15,7 @@ import f4.product.global.constant.CustomErrorCode;
 import f4.product.global.exception.CustomException;
 import f4.product.global.service.S3Service;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -242,27 +243,38 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  public List<FeignProductDto> getProductsToBeEnded() {
+  public List<FeignProductDto> updateAuctionStatusAndGetProducts() {
     LocalDateTime now = LocalDateTime.now();
 
+    List<Product> waitingProducts = productRepository.findByAuctionStartTimeBefore(now);
     List<Product> products = productRepository.findCompletedAuctionsInProgress(now);
 
-    return products.stream()
-        .map(product -> convertProductToFeignProductDto(product))
-        .collect(Collectors.toList());
-  }
+    List<FeignProductDto> feignProductDtos = new ArrayList<>();
 
-
-  public FeignProductDto auctionStatusUpdate(Long productId) {
-    Product product = productRepository.findById(productId)
-        .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
-
-    if ("PROGRESS".equals(product.getAuctionStatus()) && isAuctionEndTimePassed(product)) {
-      product.setAuctionStatus(AuctionStatus.valueOf("END"));
-      productRepository.save(product);
+    for (Product product : waitingProducts) {
+      if (product.getAuctionStartTime().isBefore(now)) {
+        product.setAuctionStatus(AuctionStatus.PROGRESS);
+        productRepository.save(product);
+      }
     }
 
-    return convertProductToFeignProductDto(product);
+    for (Product product : products) {
+      if ("PROGRESS".equals(product.getAuctionStatus()) && isAuctionEndTimePassed(product)) {
+        product.setAuctionStatus(AuctionStatus.END);
+        productRepository.save(product);
+      }
+      feignProductDtos.add(convertProductToFeignProductDto(product));
+    }
+
+    return feignProductDtos;
+  }
+
+  @Override
+  public List<FeignProductDto> getProductsSortedByAuctionPrice() {
+    List<Product> sortedProducts = productRepository.findByOrderByCurrentAuctionPriceDesc();
+    return sortedProducts.stream()
+        .map(this::convertProductToFeignProductDto)
+        .collect(Collectors.toList());
   }
 
   @Override

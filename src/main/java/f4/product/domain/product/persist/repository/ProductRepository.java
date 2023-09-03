@@ -27,4 +27,6 @@ public interface ProductRepository
 
   @Query("SELECT p FROM Product p WHERE p.auctionStatus = 'progress' AND p.auctionEndTime < ?1")
   List<Product> findCompletedAuctionsInProgress(LocalDateTime now);
+  List<Product> findByAuctionStartTimeBefore(LocalDateTime now);
+  List<Product> findByOrderByCurrentAuctionPriceDesc();
 }

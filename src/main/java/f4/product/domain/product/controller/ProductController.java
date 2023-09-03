@@ -84,15 +84,15 @@ public class ProductController {
     return ResponseEntity.ok("상품이 삭제되었습니다.");
   }
 
-  @GetMapping
-  public List<FeignProductDto> getProductsToBeEnded() {
-    return productService.getProductsToBeEnded();
-  }
-
-  @PutMapping
-  FeignProductDto auctionStatusUpdate(Long productId) {
-    return productService.auctionStatusUpdate(productId);
-  }
+//  @GetMapping
+//  public List<FeignProductDto> getProductsToBeEnded() {
+//    return productService.getProductsToBeEnded();
+//  }
+//
+//  @PutMapping
+//  FeignProductDto auctionStatusUpdate(Long productId) {
+//    return productService.auctionStatusUpdate(productId);
+//  }
 
   @GetMapping("/status/{id}")
   public AuctionTimeStatusDto getStatus(@PathVariable Long id) {
