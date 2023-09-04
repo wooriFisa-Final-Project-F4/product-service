@@ -84,14 +84,16 @@ public class ProductController {
     return ResponseEntity.ok("상품이 삭제되었습니다.");
   }
 
-  @GetMapping
-  public List<FeignProductDto> getProductsToBeEnded() {
-    return productService.getProductsToBeEnded();
+  @PutMapping("/update-to-end")
+  public ResponseEntity<List<FeignProductDto>> auctionStatusUpdateToEnd() {
+    List<FeignProductDto> updatedProducts = productService.auctionStatusUpdateToEnd();
+    return new ResponseEntity<>(updatedProducts, HttpStatus.OK);
   }
 
-  @PutMapping
-  FeignProductDto auctionStatusUpdate(Long productId) {
-    return productService.auctionStatusUpdate(productId);
+  @PutMapping("/update-to-progress")
+  public ResponseEntity<Void> auctionStatusUpdateToProgress() {
+    productService.updateAuctionStatusToProgress();
+    return ResponseEntity.ok().build();
   }
 
   @GetMapping("/status/{id}")
@@ -100,26 +102,22 @@ public class ProductController {
   }
 
   @PostMapping("/favorite")
-  public ResponseEntity<String> saveFavorite(
+  public ResponseEntity<?> saveFavorite(
       @RequestHeader("userId") Long userId, //String 으로 전환???
       @RequestParam Long productId) {
     favoriteService.saveFavorite(userId, productId);
     return ResponseEntity.ok("관심상품이 등록되었습니다.");
   }
+
   @GetMapping("/favorite/{userId}")
-  public ResponseEntity<List<ProductReadResponseDto>> readFavoriteProducts(@RequestHeader("userId") Long userId) {
+  public ResponseEntity<List<ProductReadResponseDto>> readFavoriteProducts(
+      @RequestHeader("userId") Long userId) {
     List<ProductReadResponseDto> favoriteProducts = favoriteService.readFavoriteProducts(userId);
     return new ResponseEntity<>(favoriteProducts, HttpStatus.OK);
   }
-//  @DeleteMapping("/favorite/{productId}")
-//  public ResponseEntity<String> deleteFavorite(
-//      @RequestHeader("userId") Long userId,
-//      @PathVariable Long productId) {
-//    favoriteService.deleteFavorite(userId, productId);
-//    return ResponseEntity.ok("관심상품이 삭제되었습니다.");
-//  }
-  @DeleteMapping("/favorite/{productId}")
-  public ResponseEntity<String> deleteFavorite(
+
+  @DeleteMapping("/favorite")
+  public ResponseEntity<?> deleteFavorite(
       @RequestHeader("userId") Long userId,
       @RequestParam Long productId) {
     favoriteService.deleteFavorite(userId, productId);

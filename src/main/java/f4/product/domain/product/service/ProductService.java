@@ -26,12 +26,10 @@ public interface ProductService {
 
   void deleteProduct(Long productId);
 
-  List<FeignProductDto> getProductsToBeEnded();
-
-  FeignProductDto auctionStatusUpdate(Long productId);
-
   AuctionTimeStatusDto getStatus(Long Id);
 
   Product findProductById(Long productId);
-
+  List<FeignProductDto> auctionStatusUpdateToEnd();
+  void updateAuctionStatusToProgress();
+  List<FeignProductDto> getProductsSortedByAuctionPrice();
 }
