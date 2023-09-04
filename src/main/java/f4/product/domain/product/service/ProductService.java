@@ -29,6 +29,7 @@ public interface ProductService {
   AuctionTimeStatusDto getStatus(Long Id);
 
   Product findProductById(Long productId);
-  List<FeignProductDto> updateAuctionStatusAndGetProducts();
+  List<FeignProductDto> auctionStatusUpdateToEnd();
+  void updateAuctionStatusToProgress();
   List<FeignProductDto> getProductsSortedByAuctionPrice();
 }

@@ -3,6 +3,7 @@ package f4.product.domain.product.controller;
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
 import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
 import f4.product.domain.product.dto.response.AuctionTimeStatusDto;
+import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.service.FavoriteService;
 import f4.product.domain.product.service.ProductService;
@@ -83,15 +84,17 @@ public class ProductController {
     return ResponseEntity.ok("상품이 삭제되었습니다.");
   }
 
-//  @GetMapping
-//  public List<FeignProductDto> getProductsToBeEnded() {
-//    return productService.getProductsToBeEnded();
-//  }
-//
-//  @PutMapping
-//  FeignProductDto auctionStatusUpdate(Long productId) {
-//    return productService.auctionStatusUpdate(productId);
-//  }
+  @PutMapping("/update-to-end")
+  public ResponseEntity<List<FeignProductDto>> auctionStatusUpdateToEnd() {
+    List<FeignProductDto> updatedProducts = productService.auctionStatusUpdateToEnd();
+    return new ResponseEntity<>(updatedProducts, HttpStatus.OK);
+  }
+
+  @PutMapping("/update-to-progress")
+  public ResponseEntity<Void> auctionStatusUpdateToProgress() {
+    productService.updateAuctionStatusToProgress();
+    return ResponseEntity.ok().build();
+  }
 
   @GetMapping("/status/{id}")
   public AuctionTimeStatusDto getStatus(@PathVariable Long id) {
@@ -99,7 +102,7 @@ public class ProductController {
   }
 
   @PostMapping("/favorite")
-  public ResponseEntity<String> saveFavorite(
+  public ResponseEntity<?> saveFavorite(
       @RequestHeader("userId") Long userId, //String 으로 전환???
       @RequestParam Long productId) {
     favoriteService.saveFavorite(userId, productId);
@@ -113,15 +116,8 @@ public class ProductController {
     return new ResponseEntity<>(favoriteProducts, HttpStatus.OK);
   }
 
-  //  @DeleteMapping("/favorite/{productId}")
-//  public ResponseEntity<String> deleteFavorite(
-//      @RequestHeader("userId") Long userId,
-//      @PathVariable Long productId) {
-//    favoriteService.deleteFavorite(userId, productId);
-//    return ResponseEntity.ok("관심상품이 삭제되었습니다.");
-//  }
-  @DeleteMapping("/favorite/{productId}")
-  public ResponseEntity<String> deleteFavorite(
+  @DeleteMapping("/favorite")
+  public ResponseEntity<?> deleteFavorite(
       @RequestHeader("userId") Long userId,
       @RequestParam Long productId) {
     favoriteService.deleteFavorite(userId, productId);

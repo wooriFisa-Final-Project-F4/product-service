@@ -241,32 +241,31 @@ public class ProductServiceImpl implements ProductService {
       s3Service.deleteFile(imageUrl);
     }
   }
-
+  @Transactional
   @Override
-  public List<FeignProductDto> updateAuctionStatusAndGetProducts() {
+  public List<FeignProductDto> auctionStatusUpdateToEnd() {
     LocalDateTime now = LocalDateTime.now();
-
-    List<Product> waitingProducts = productRepository.findByAuctionStartTimeBefore(now);
     List<Product> products = productRepository.findCompletedAuctionsInProgress(now);
-
     List<FeignProductDto> feignProductDtos = new ArrayList<>();
 
-    for (Product product : waitingProducts) {
-      if (product.getAuctionStartTime().isBefore(now)) {
-        product.setAuctionStatus(AuctionStatus.PROGRESS);
-        productRepository.save(product);
-      }
-    }
-
     for (Product product : products) {
-      if ("PROGRESS".equals(product.getAuctionStatus()) && isAuctionEndTimePassed(product)) {
         product.setAuctionStatus(AuctionStatus.END);
         productRepository.save(product);
-      }
-      feignProductDtos.add(convertProductToFeignProductDto(product));
+        feignProductDtos.add(convertProductToFeignProductDto(product));
     }
 
     return feignProductDtos;
+  }
+  @Transactional
+  @Override
+  public void updateAuctionStatusToProgress() {
+    LocalDateTime now = LocalDateTime.now();
+    List<Product> waitingProducts = productRepository.findStartedAuctionsWaiting(now);
+
+    for (Product product : waitingProducts) {
+        product.setAuctionStatus(AuctionStatus.PROGRESS);
+        productRepository.save(product);
+    }
   }
 
   @Override
@@ -294,11 +293,6 @@ public class ProductServiceImpl implements ProductService {
   public Product findProductById(Long productId) {
     return productRepository.findById(productId)
         .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
-  }
-
-  private boolean isAuctionEndTimePassed(Product product) {
-    LocalDateTime now = LocalDateTime.now();
-    return now.isAfter(product.getAuctionEndTime());
   }
 
   private FeignProductDto convertProductToFeignProductDto(Product product) {
