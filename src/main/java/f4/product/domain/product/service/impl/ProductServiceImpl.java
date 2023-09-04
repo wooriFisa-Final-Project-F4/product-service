@@ -271,7 +271,7 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public List<FeignProductDto> getProductsSortedByAuctionPrice() {
-    List<Product> sortedProducts = productRepository.findByOrderByCurrentAuctionPriceDesc();
+    List<Product> sortedProducts = productRepository.findByOrderByAuctionPriceDesc();
     return sortedProducts.stream()
         .map(this::convertProductToFeignProductDto)
         .collect(Collectors.toList());
