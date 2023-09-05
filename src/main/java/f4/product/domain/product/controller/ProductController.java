@@ -6,7 +6,6 @@ import f4.product.domain.product.dto.response.AuctionTimeStatusDto;
 import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.service.AuctionStatusService;
-import f4.product.domain.product.service.FavoriteService;
 import f4.product.domain.product.service.ProductService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,11 +61,18 @@ public class ProductController {
     return new ResponseEntity<>(products, HttpStatus.OK);
   }
 
-  @GetMapping("/search")
+  @GetMapping("/search/category")
   public ResponseEntity<List<ProductReadResponseDto>> findByMediumAndKeyword(
       @RequestParam String category, @RequestParam String keyword) {
     List<ProductReadResponseDto> products =
         productService.findByMediumAndKeyword(category, keyword);
+    return new ResponseEntity<>(products, HttpStatus.OK);
+  }
+
+  @GetMapping("/search")
+  public ResponseEntity<List<ProductReadResponseDto>> findByMedium(
+      @RequestParam String category) {
+    List<ProductReadResponseDto> products = productService.findByMedium(category);
     return new ResponseEntity<>(products, HttpStatus.OK);
   }
 
