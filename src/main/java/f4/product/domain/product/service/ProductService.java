@@ -2,8 +2,6 @@ package f4.product.domain.product.service;
 
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
 import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
-import f4.product.domain.product.dto.response.AuctionTimeStatusDto;
-import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.persist.entity.Product;
 import java.util.List;
@@ -26,10 +24,6 @@ public interface ProductService {
 
   void deleteProduct(Long productId);
 
-  AuctionTimeStatusDto getStatus(Long Id);
-
   Product findProductById(Long productId);
-  List<FeignProductDto> auctionStatusUpdateToEnd();
-  void updateAuctionStatusToProgress();
-  List<FeignProductDto> getProductsSortedByAuctionPrice();
+
 }

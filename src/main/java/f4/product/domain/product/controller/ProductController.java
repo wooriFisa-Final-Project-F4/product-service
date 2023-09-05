@@ -5,6 +5,7 @@ import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
 import f4.product.domain.product.dto.response.AuctionTimeStatusDto;
 import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
+import f4.product.domain.product.service.AuctionStatusService;
 import f4.product.domain.product.service.FavoriteService;
 import f4.product.domain.product.service.ProductService;
 import java.util.List;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
 
   private final ProductService productService;
-  private final FavoriteService favoriteService;
+  private final AuctionStatusService auctionStatusService;
 
   @PostMapping("/save")
   public ResponseEntity<?> saveProduct(@ModelAttribute ProductSaveRequestDto requestDto) {
@@ -44,7 +45,7 @@ public class ProductController {
     return new ResponseEntity<>(products, HttpStatus.OK);
   }
 
-  @GetMapping("/{productId}")
+  @GetMapping("/update/{productId}")
   public ResponseEntity<ProductReadResponseDto> findById(@PathVariable Long productId) {
     ProductReadResponseDto response = productService.findById(productId);
     return new ResponseEntity<>(response, HttpStatus.OK);
@@ -86,41 +87,18 @@ public class ProductController {
 
   @PutMapping("/update-to-end")
   public ResponseEntity<List<FeignProductDto>> auctionStatusUpdateToEnd() {
-    List<FeignProductDto> updatedProducts = productService.auctionStatusUpdateToEnd();
+    List<FeignProductDto> updatedProducts = auctionStatusService.auctionStatusUpdateToEnd();
     return new ResponseEntity<>(updatedProducts, HttpStatus.OK);
   }
 
   @PutMapping("/update-to-progress")
   public ResponseEntity<Void> auctionStatusUpdateToProgress() {
-    productService.updateAuctionStatusToProgress();
+    auctionStatusService.updateAuctionStatusToProgress();
     return ResponseEntity.ok().build();
   }
 
   @GetMapping("/status/{id}")
   public AuctionTimeStatusDto getStatus(@PathVariable Long id) {
-    return productService.getStatus(id);
-  }
-
-  @PostMapping("/favorite")
-  public ResponseEntity<?> saveFavorite(
-      @RequestHeader("userId") Long userId, //String 으로 전환???
-      @RequestParam Long productId) {
-    favoriteService.saveFavorite(userId, productId);
-    return ResponseEntity.ok("관심상품이 등록되었습니다.");
-  }
-
-  @GetMapping("/favorite/{userId}")
-  public ResponseEntity<List<ProductReadResponseDto>> readFavoriteProducts(
-      @RequestHeader("userId") Long userId) {
-    List<ProductReadResponseDto> favoriteProducts = favoriteService.readFavoriteProducts(userId);
-    return new ResponseEntity<>(favoriteProducts, HttpStatus.OK);
-  }
-
-  @DeleteMapping("/favorite")
-  public ResponseEntity<?> deleteFavorite(
-      @RequestHeader("userId") Long userId,
-      @RequestParam Long productId) {
-    favoriteService.deleteFavorite(userId, productId);
-    return ResponseEntity.ok("관심상품이 삭제되었습니다.");
+    return auctionStatusService.getStatus(id);
   }
 }

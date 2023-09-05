@@ -3,8 +3,6 @@ package f4.product.domain.product.service.impl;
 import f4.product.domain.product.constant.AuctionStatus;
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
 import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
-import f4.product.domain.product.dto.response.AuctionTimeStatusDto;
-import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.persist.entity.Product;
 import f4.product.domain.product.persist.entity.ProductImage;
@@ -14,8 +12,6 @@ import f4.product.domain.product.service.ProductService;
 import f4.product.global.constant.CustomErrorCode;
 import f4.product.global.exception.CustomException;
 import f4.product.global.service.S3Service;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -233,7 +229,6 @@ public class ProductServiceImpl implements ProductService {
     productRepository.delete(product);
   }
 
-
   // 이미지를 S3에서 삭제
   private void deleteProductImages(List<ProductImage> images) {
     for (ProductImage image : images) {
@@ -241,76 +236,13 @@ public class ProductServiceImpl implements ProductService {
       s3Service.deleteFile(imageUrl);
     }
   }
-  @Transactional
-  @Override
-  public List<FeignProductDto> auctionStatusUpdateToEnd() {
-    LocalDateTime now = LocalDateTime.now();
-    List<Product> products = productRepository.findCompletedAuctionsInProgress(now);
-    List<FeignProductDto> feignProductDtos = new ArrayList<>();
-
-    for (Product product : products) {
-        product.setAuctionStatus(AuctionStatus.END);
-        productRepository.save(product);
-        feignProductDtos.add(convertProductToFeignProductDto(product));
-    }
-
-    return feignProductDtos;
-  }
-  @Transactional
-  @Override
-  public void updateAuctionStatusToProgress() {
-    LocalDateTime now = LocalDateTime.now();
-    List<Product> waitingProducts = productRepository.findStartedAuctionsWaiting(now);
-
-    for (Product product : waitingProducts) {
-        product.setAuctionStatus(AuctionStatus.PROGRESS);
-        productRepository.save(product);
-    }
-  }
-
-  @Override
-  public List<FeignProductDto> getProductsSortedByAuctionPrice() {
-    List<Product> sortedProducts = productRepository.findByOrderByAuctionPriceDesc();
-    return sortedProducts.stream()
-        .map(this::convertProductToFeignProductDto)
-        .collect(Collectors.toList());
-  }
-
-  @Override
-  public AuctionTimeStatusDto getStatus(Long id) {
-    Product product = productRepository.findById(id)
-        .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
-
-    AuctionTimeStatusDto statusDto = AuctionTimeStatusDto.builder()
-        .auctionStatus(product.getAuctionStatus().toString())
-        .auctionStartTime(product.getAuctionStartTime())
-        .auctionEndTime(product.getAuctionEndTime())
-        .build();
-
-    return statusDto;
-  }
 
   public Product findProductById(Long productId) {
     return productRepository.findById(productId)
         .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PRODUCT));
   }
 
-  private FeignProductDto convertProductToFeignProductDto(Product product) {
-    String imageUrl = getProductImageUrl(product);
-
-    return FeignProductDto.builder()
-        .id(product.getId())
-        .name(product.getName())
-        .image(imageUrl)
-        .artist(product.getArtist())
-        .auctionPrice(product.getAuctionPrice())
-        .auctionStatus(String.valueOf(product.getAuctionStatus()))
-        .auctionEndTime(product.getAuctionEndTime())
-        .bidUserId(product.getBidUserId() != null ? product.getBidUserId() : 0)
-        .build();
-  }
-
-  private String getProductImageUrl(Product product) {
+  public String getProductImageUrl(Product product) {
     if (!product.getImages().isEmpty()) {
       return product.getImages().get(0).getImageUrl();
     }
