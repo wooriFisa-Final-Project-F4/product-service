@@ -1,13 +1,13 @@
 package f4.product.domain.product.service.impl;
 
-import f4.product.domain.product.dto.request.FeignUserDto;
+import f4.product.domain.product.service.feign.dto.ProductResponseDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.persist.entity.Favorite;
 import f4.product.domain.product.persist.entity.Product;
 import f4.product.domain.product.persist.repository.FavoriteRepository;
 import f4.product.domain.product.service.FavoriteService;
 import f4.product.domain.product.service.ProductService;
-import f4.product.domain.product.service.UserServiceAPI;
+import f4.product.domain.product.service.feign.UserServiceAPI;
 import f4.product.global.constant.CustomErrorCode;
 import f4.product.global.exception.CustomException;
 import java.util.ArrayList;
@@ -26,8 +26,8 @@ public class FavoriteServiceImpl implements FavoriteService {
 
   @Override
   public void saveFavorite(Long userId, Long productId) {
-    // 사용자 정보 가져오기 -> User Service에서 getUserById(userId)구현 필요
-    FeignUserDto userDto = userServiceAPI.getUserById(userId);
+//     사용자 정보 가져오기 -> User Service에서 getUserById(userId)구현 필요
+    ProductResponseDto userDto = userServiceAPI.existsByUserId(userId);
 
     if (userDto == null) {
       throw new CustomException(CustomErrorCode.USER_NOT_FOUND);
@@ -47,7 +47,7 @@ public class FavoriteServiceImpl implements FavoriteService {
   @Override
   public List<ProductReadResponseDto> readFavoriteProducts(Long userId) {
     // 사용자 정보 가져오기 -> User Service에서 getUserById(userId) 구현 필요
-    FeignUserDto userDto = userServiceAPI.getUserById(userId);
+    ProductResponseDto userDto = userServiceAPI.existsByUserId(userId);
 
     if (userDto == null) {
       throw new CustomException(CustomErrorCode.USER_NOT_FOUND);
@@ -68,10 +68,11 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     return favoriteProducts;
   }
+
   @Override
   public void deleteFavorite(Long userId, Long productId) {
     // 사용자 정보 가져오기 -> User Service에서 getUserById(userId) 구현 필요
-    FeignUserDto userDto = userServiceAPI.getUserById(userId);
+    ProductResponseDto userDto = userServiceAPI.existsByUserId(userId);
 
     if (userDto == null) {
       throw new CustomException(CustomErrorCode.USER_NOT_FOUND);

@@ -1,11 +1,11 @@
-package f4.product.domain.product.dto.request;
+package f4.product.domain.product.service.feign.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FeignUserDto {
+public class ProductResponseDto {
 
   private Long userId;
 }
