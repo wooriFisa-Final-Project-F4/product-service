@@ -19,6 +19,7 @@ public interface ProductService {
   List<ProductReadResponseDto> findByArtist(String artist);
 
   List<ProductReadResponseDto> findByMediumAndKeyword(String theme, String keyword);
+  List<ProductReadResponseDto> findByMedium(String medium);
 
   void updateProduct(Long productId, ProductUpdateRequestDto updateDto);
 
