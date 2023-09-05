@@ -15,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuctionTimeStatusDto implements Serializable {
+
   private String auctionStatus;
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   private LocalDateTime auctionStartTime;

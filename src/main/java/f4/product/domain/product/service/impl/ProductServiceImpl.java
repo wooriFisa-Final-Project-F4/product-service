@@ -70,9 +70,11 @@ public class ProductServiceImpl implements ProductService {
   public List<ProductReadResponseDto> findByMediumAndKeyword(String medium, String keyword) {
     return findProductsOrThrow(productRepository.findByMediumAndKeyword(medium, keyword));
   }
+
   public List<ProductReadResponseDto> findByMedium(String medium) {
     return findProductsOrThrow(productRepository.findByMedium(medium));
   }
+
   private void validateUniqueProductIdentifier(ProductSaveRequestDto requestDto) {
     String identifier = generateIdentifier(requestDto);
     if (productRepository.findByIdentifier(identifier).isPresent()) {

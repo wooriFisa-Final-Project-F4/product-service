@@ -1,6 +1,5 @@
 package f4.product.domain.product.service.impl;
 
-import f4.product.domain.product.service.feign.dto.ProductResponseDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.persist.entity.Favorite;
 import f4.product.domain.product.persist.entity.Product;
@@ -8,6 +7,7 @@ import f4.product.domain.product.persist.repository.FavoriteRepository;
 import f4.product.domain.product.service.FavoriteService;
 import f4.product.domain.product.service.ProductService;
 import f4.product.domain.product.service.feign.UserServiceAPI;
+import f4.product.domain.product.service.feign.dto.ProductResponseDto;
 import f4.product.global.constant.CustomErrorCode;
 import f4.product.global.exception.CustomException;
 import java.util.ArrayList;

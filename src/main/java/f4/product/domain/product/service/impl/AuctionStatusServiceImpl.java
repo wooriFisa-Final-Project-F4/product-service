@@ -4,20 +4,15 @@ import f4.product.domain.product.constant.AuctionStatus;
 import f4.product.domain.product.dto.response.AuctionTimeStatusDto;
 import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.persist.entity.Product;
-import f4.product.domain.product.persist.repository.ProductImageRepository;
 import f4.product.domain.product.persist.repository.ProductRepository;
 import f4.product.domain.product.service.AuctionStatusService;
-import f4.product.domain.product.service.ProductService;
 import f4.product.global.constant.CustomErrorCode;
 import f4.product.global.exception.CustomException;
-import f4.product.global.service.S3Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service

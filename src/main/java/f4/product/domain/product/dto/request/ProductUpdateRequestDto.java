@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductUpdateRequestDto implements Serializable {
+
   private String name;
   private List<MultipartFile> newImages;
   private boolean deleteExistingImages;
