@@ -2,7 +2,6 @@ package f4.product.domain.product.persist.entity;
 
 import f4.product.domain.product.constant.AuctionStatus;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -78,7 +77,7 @@ public class Product {
   @Column(name = "auction_start_time", nullable = false)
   private LocalDateTime auctionStartTime;
 
-  @Column(name = "auction_end_time", nullable = false)
+  @Column(name = "auction_end_time", nullable = true)
   private LocalDateTime auctionEndTime;
 
   @Column(name = "bid_user_id", nullable = true)

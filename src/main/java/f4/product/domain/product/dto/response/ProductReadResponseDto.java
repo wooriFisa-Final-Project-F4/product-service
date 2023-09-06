@@ -4,8 +4,6 @@ import f4.product.domain.product.constant.AuctionStatus;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import f4.product.domain.product.persist.entity.ProductImage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -21,13 +21,14 @@ public interface ProductRepository
 
   Optional<Product> findById(Long productId);
 
-//  @Query("SELECT p FROM Product p WHERE p.theme = :medium AND (LOWER(p.style) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.technique) LIKE LOWER(CONCAT('%', :keyword, '%')))")
-@Query("SELECT p FROM Product p WHERE p.medium = :medium " +
-    "AND (:keyword IS NULL OR " +
-    "LOWER(p.theme) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-    "LOWER(p.style) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-    "LOWER(p.technique) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+  //  @Query("SELECT p FROM Product p WHERE p.theme = :medium AND (LOWER(p.style) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.technique) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+  @Query("SELECT p FROM Product p WHERE p.medium = :medium " +
+      "AND (:keyword IS NULL OR " +
+      "LOWER(p.theme) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+      "LOWER(p.style) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+      "LOWER(p.technique) LIKE LOWER(CONCAT('%', :keyword, '%')))")
   Optional<List<Product>> findByMediumAndKeyword(String medium, String keyword);
+
   @Query("SELECT p FROM Product p WHERE p.medium = :medium")
   Optional<List<Product>> findByMedium(String medium);
 
