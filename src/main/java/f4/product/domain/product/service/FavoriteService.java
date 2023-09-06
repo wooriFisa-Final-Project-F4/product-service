@@ -1,6 +1,7 @@
 package f4.product.domain.product.service;
 
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
+import f4.product.domain.product.persist.entity.Product;
 import java.util.List;
 
 public interface FavoriteService {
@@ -9,6 +10,5 @@ public interface FavoriteService {
 
   List<ProductReadResponseDto> readFavoriteProducts(Long userId);
 
-  void deleteFavorite(Long userId, Long productId);
-
+  void deleteFavoriteFavoriteWithCheck(Long userId, Long productId);
 }

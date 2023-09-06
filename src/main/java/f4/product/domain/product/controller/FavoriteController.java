@@ -49,7 +49,7 @@ public class FavoriteController {
       @RequestHeader("userId") Long userId,
       @RequestParam Long productId) {
     log.info("관심상품 삭제 요청 받음. 사용자 ID: {}, 상품 ID: {}", userId, productId);
-    favoriteService.deleteFavorite(userId, productId);
+    favoriteService.deleteFavoriteFavoriteWithCheck(userId, productId);
     log.info("관심상품 삭제 완료. 사용자 ID: {}, 상품 ID: {}", userId, productId);
     return ResponseEntity.ok("관심상품이 삭제되었습니다.");
   }
