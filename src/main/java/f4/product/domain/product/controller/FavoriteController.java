@@ -31,8 +31,8 @@ public class FavoriteController {
       @RequestParam("productId") Long productId) {
     log.info("관심상품 등록 요청 받음. 사용자 ID: {}, 상품 ID: {}", userId, productId);
     favoriteService.saveFavorite(userId, productId);
-    log.info("관심상품 등록 완료. 사용자 ID: {}, 상품 ID: {}", userId, productId);
-    return ResponseEntity.ok("관심상품이 등록되었습니다.");
+    ResponseEntity<?> response = favoriteService.saveFavorite(userId, productId);
+    return response;
   }
 
   @GetMapping
