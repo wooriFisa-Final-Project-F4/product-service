@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FavoriteServiceImpl implements FavoriteService {
@@ -27,7 +29,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 
   @Override
   @Transactional
-  public void saveFavorite(Long userId, Long productId) {
+  public ResponseEntity<?> saveFavorite(Long userId, Long productId) {
     ProductResponseDto feignResponse = userServiceAPI.existsByUserId(userId);
 
     if (!feignResponse.isExisted()) {
@@ -38,8 +40,12 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     if (isCheckedFavorite(userId, productId)) {
       deleteFavorite(userId, productId);
+      log.info("관심상품 삭제 완료. 사용자 ID: {}, 상품 ID: {}", userId, productId);
+      return ResponseEntity.ok("관심상품이 삭제되었습니다.");
     } else {
       addFavoriteIfNotFull(userId, product);
+      log.info("관심상품 등록 완료. 사용자 ID: {}, 상품 ID: {}", userId, productId);
+      return ResponseEntity.ok("관심상품이 등록되었습니다.");
     }
   }
 
@@ -48,7 +54,6 @@ public class FavoriteServiceImpl implements FavoriteService {
   }
 
   //10개 미만인 경우 생성 메서드
-
   public void addFavoriteIfNotFull(Long userId, Product product) {
     if (favoriteRepository.countByUserId(userId) >= 10) {
       throw new CustomException(CustomErrorCode.TOO_MANY_FAVORITE_PRODUCTS);
