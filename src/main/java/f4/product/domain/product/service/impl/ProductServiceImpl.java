@@ -200,6 +200,7 @@ public class ProductServiceImpl implements ProductService {
     // 나머지 필드 업데이트 처리
     product.setName(updateDto.getName());
     product.setArtist(updateDto.getArtist());
+    product.setIdentifier(updateDto.getArtist() + "_" + updateDto.getName());
     product.setCountry(updateDto.getCountry());
     product.setDescription(updateDto.getDescription());
     product.setCompletionDate(updateDto.getCompletionDate());
