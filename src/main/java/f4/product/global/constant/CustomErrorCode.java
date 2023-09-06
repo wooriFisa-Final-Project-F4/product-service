@@ -19,7 +19,6 @@ public enum CustomErrorCode {
   USER_NOT_FOUND(400, "존재하지 않는 유저입니다."),
   TOO_MANY_FAVORITE_PRODUCTS(400, "관심 상품 등록 제한을 초과했습니다.");
 
-
   // Unathorized 401
 
   // Forbidden 402

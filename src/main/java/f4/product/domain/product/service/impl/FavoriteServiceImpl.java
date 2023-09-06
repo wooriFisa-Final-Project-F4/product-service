@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -49,7 +50,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     }
   }
 
-  public boolean isCheckedFavorite(Long userId, Long productId){
+  public boolean isCheckedFavorite(Long userId, Long productId) {
     return favoriteRepository.countByUserIdAndProductId(userId, productId) > 0;
   }
 
@@ -62,12 +63,12 @@ public class FavoriteServiceImpl implements FavoriteService {
   }
 
 
-  public void deleteFavorite(Long userId, Long productId){
+  public void deleteFavorite(Long userId, Long productId) {
     favoriteRepository.deleteByUserIdAndProductId(userId, productId);
   }
 
   // Favorite 엔티티 생성 및 저장
-  public void saveFavoriteProduct(Long userId, Product product){
+  public void saveFavoriteProduct(Long userId, Product product) {
     Favorite favorite = Favorite.builder()
         .userId(userId)
         .product(product)
