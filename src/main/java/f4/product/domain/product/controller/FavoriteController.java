@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/product/favorite/v1")
+@RequestMapping("/favorite/v1")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:3000/")
 public class FavoriteController {
 
   private final FavoriteService favoriteService;
