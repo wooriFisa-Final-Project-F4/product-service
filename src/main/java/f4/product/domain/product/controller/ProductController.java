@@ -25,9 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/product/v1")
+@RequestMapping("/v1")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:3000/")
 public class ProductController {
 
   private final ProductService productService;
