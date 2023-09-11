@@ -1,5 +1,6 @@
 package f4.product.domain.product.controller;
 
+import f4.product.domain.product.constant.Role;
 import f4.product.domain.product.dto.request.ProductSaveRequestDto;
 import f4.product.domain.product.dto.request.ProductUpdateRequestDto;
 import f4.product.domain.product.dto.response.AuctionTimeStatusDto;
@@ -7,18 +8,20 @@ import f4.product.domain.product.dto.response.FeignProductDto;
 import f4.product.domain.product.dto.response.ProductReadResponseDto;
 import f4.product.domain.product.service.AuctionStatusService;
 import f4.product.domain.product.service.ProductService;
+import f4.product.global.constant.CustomErrorCode;
+import f4.product.global.exception.CustomException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,11 +36,20 @@ public class ProductController {
   private final AuctionStatusService auctionStatusService;
 
   @PostMapping("/save")
-  public ResponseEntity<?> saveProduct(@ModelAttribute ProductSaveRequestDto requestDto) {
-    log.info("상품 등록 요청 받음. 상품명: {}", requestDto.getName());
-    productService.saveProduct(requestDto);
-    log.info("상품 등록 완료. 상품명: {}", requestDto.getName());
-    return new ResponseEntity<>("상품 등록이 완료되었습니다.", HttpStatus.OK);
+  public ResponseEntity<?> saveProduct(
+      @ModelAttribute ProductSaveRequestDto requestDto,
+      @RequestHeader("role") String role
+  ) {
+    Role userRole = Role.of(role);
+
+    if (userRole == Role.ADMIN) {
+      log.info("상품 등록 요청 받음. 상품명: {}", requestDto.getName());
+      productService.saveProduct(requestDto);
+      log.info("상품 등록 완료. 상품명: {}", requestDto.getName());
+      return new ResponseEntity<>("상품 등록이 완료되었습니다.", HttpStatus.OK);
+    } else {
+      throw new CustomException(CustomErrorCode.NOT_EXIST_ROLE);
+    }
   }
 
   @GetMapping("/findAll")
@@ -94,19 +106,36 @@ public class ProductController {
   @PutMapping("/{productId}")
   public ResponseEntity<String> updateProduct(
       @PathVariable Long productId,
-      @ModelAttribute ProductUpdateRequestDto updateRequestDto) {
-    log.info("상품 수정 요청 받음. 상품 ID: {}", productId);
-    productService.updateProduct(productId, updateRequestDto);
-    log.info("상품이 수정 완료. 상품 ID: {}", productId);
-    return ResponseEntity.ok("상품이 수정되었습니다.");
+      @ModelAttribute ProductUpdateRequestDto updateRequestDto,
+      @RequestHeader("role") String role
+  ) {
+    Role userRole = Role.of(role);
+
+    if (userRole == Role.ADMIN) {
+      log.info("상품 수정 요청 받음. 상품 ID: {}", productId);
+      productService.updateProduct(productId, updateRequestDto);
+      log.info("상품이 수정 완료. 상품 ID: {}", productId);
+      return ResponseEntity.ok("상품이 수정되었습니다.");
+    } else {
+      throw new CustomException(CustomErrorCode.NOT_EXIST_ROLE);
+    }
   }
 
   @DeleteMapping("/{productId}")
-  public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
-    log.info("상품 삭제 요청 받음. 상품 ID: {}", productId);
-    productService.deleteProduct(productId);
-    log.info("상품 삭제 완료. 상품 ID: {}", productId);
-    return ResponseEntity.ok("상품이 삭제되었습니다.");
+  public ResponseEntity<String> deleteProduct(
+      @PathVariable Long productId,
+      @RequestHeader("role") String role
+  ) {
+    Role userRole = Role.of(role);
+
+    if (userRole == Role.ADMIN) {
+      log.info("상품 삭제 요청 받음. 상품 ID: {}", productId);
+      productService.deleteProduct(productId);
+      log.info("상품 삭제 완료. 상품 ID: {}", productId);
+      return ResponseEntity.ok("상품이 삭제되었습니다.");
+    } else {
+      throw new CustomException(CustomErrorCode.NOT_EXIST_ROLE);
+    }
   }
 
   @PutMapping("/update-to-end")

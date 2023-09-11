@@ -17,7 +17,8 @@ public enum CustomErrorCode {
   S3_DELETE_FAIL(400, "이미지 삭제를 실패하였습니다."),
   INVALID_AUCTION_STATUS_UPDATE(400, "상품의 경매 상태 변경을 실패하였습니다."),
   USER_NOT_FOUND(400, "존재하지 않는 유저입니다."),
-  TOO_MANY_FAVORITE_PRODUCTS(400, "관심 상품 등록 제한을 초과했습니다.");
+  TOO_MANY_FAVORITE_PRODUCTS(400, "관심 상품 등록 제한을 초과했습니다."),
+  NOT_EXIST_ROLE(400, "해당 역할은 존재하지 않습니다.");
 
   // Unathorized 401
 
