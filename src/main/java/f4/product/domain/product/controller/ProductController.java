@@ -110,19 +110,18 @@ public class ProductController {
   }
 
   @PutMapping("/update-to-end")
-  public ResponseEntity<List<FeignProductDto>> auctionStatusUpdateToEnd() {
+  public List<FeignProductDto> auctionStatusUpdateToEnd() {
     log.info("경매 상태 업데이트 요청. (END로 변경)");
     List<FeignProductDto> updatedProducts = auctionStatusService.auctionStatusUpdateToEnd();
     log.info("경매 상태 업데이트 완료. (END로 변경), 업데이트된 상품 수: {}", updatedProducts.size());
-    return new ResponseEntity<>(updatedProducts, HttpStatus.OK);
+    return updatedProducts;
   }
 
   @PutMapping("/update-to-progress")
-  public ResponseEntity<Void> auctionStatusUpdateToProgress() {
+  public void auctionStatusUpdateToProgress() {
     log.info("경매 상태 업데이트 요청. (PROGRESS로 변경)");
     auctionStatusService.updateAuctionStatusToProgress();
     log.info("경매 상태 업데이트 완료. (PROGRESS으로 변경)");
-    return ResponseEntity.ok().build();
   }
 
   @GetMapping("/status/{id}")
