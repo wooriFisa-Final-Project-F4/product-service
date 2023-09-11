@@ -123,19 +123,19 @@ public class ProductController {
 
   @DeleteMapping("/{productId}")
   public ResponseEntity<String> deleteProduct(
-      @PathVariable Long productId,
-      @RequestHeader("role") String role
+      @PathVariable Long productId
+//      @RequestHeader("role") String role
   ) {
-    Role userRole = Role.of(role);
+//    Role userRole = Role.of(role);
 
-    if (userRole == Role.ADMIN) {
+//    if (userRole == Role.ADMIN) {
       log.info("상품 삭제 요청 받음. 상품 ID: {}", productId);
       productService.deleteProduct(productId);
       log.info("상품 삭제 완료. 상품 ID: {}", productId);
       return ResponseEntity.ok("상품이 삭제되었습니다.");
-    } else {
-      throw new CustomException(CustomErrorCode.NOT_EXIST_ROLE);
-    }
+//    } else {
+//      throw new CustomException(CustomErrorCode.NOT_EXIST_ROLE);
+//    }
   }
 
   @PutMapping("/update-to-end")
