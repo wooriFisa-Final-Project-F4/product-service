@@ -54,7 +54,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     return favoriteRepository.countByUserIdAndProductId(userId, productId) > 0;
   }
 
-  //10개 미만인 경우 생성 메서드
+  // 10개 미만인 경우 생성 메서드
   public void addFavoriteIfNotFull(Long userId, Product product) {
     if (favoriteRepository.countByUserId(userId) >= 10) {
       throw new CustomException(CustomErrorCode.TOO_MANY_FAVORITE_PRODUCTS);
@@ -62,25 +62,21 @@ public class FavoriteServiceImpl implements FavoriteService {
     saveFavoriteProduct(userId, product);
   }
 
-
   public void deleteFavorite(Long userId, Long productId) {
     favoriteRepository.deleteByUserIdAndProductId(userId, productId);
   }
 
   // Favorite 엔티티 생성 및 저장
   public void saveFavoriteProduct(Long userId, Product product) {
-    Favorite favorite = Favorite.builder()
-        .userId(userId)
-        .product(product)
-        .build();
+    Favorite favorite = Favorite.builder().userId(userId).product(product).build();
     favoriteRepository.save(favorite);
   }
 
   @Override
   public List<ProductReadResponseDto> readFavoriteProducts(Long userId) {
-    ProductResponseDto userDto = userServiceAPI.existsByUserId(userId);
+    ProductResponseDto feignResponse = userServiceAPI.existsByUserId(userId);
 
-    if (userDto.isExisted()) {
+    if (!feignResponse.isExisted()) {
       throw new CustomException(CustomErrorCode.USER_NOT_FOUND);
     }
 
@@ -100,10 +96,11 @@ public class FavoriteServiceImpl implements FavoriteService {
   }
 
   @Override
+  @Transactional
   public void deleteFavoriteFavoriteWithCheck(Long userId, Long productId) {
-    ProductResponseDto userDto = userServiceAPI.existsByUserId(userId);
+    ProductResponseDto feignResponse = userServiceAPI.existsByUserId(userId);
 
-    if (userDto.isExisted()) {
+    if (!feignResponse.isExisted()) {
       throw new CustomException(CustomErrorCode.USER_NOT_FOUND);
     }
     // 관심 상품 삭제
