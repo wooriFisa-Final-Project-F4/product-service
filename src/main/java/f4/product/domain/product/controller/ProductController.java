@@ -40,16 +40,15 @@ public class ProductController {
       @ModelAttribute ProductSaveRequestDto requestDto,
       @RequestHeader("role") String role
   ) {
-    Role userRole = Role.of(role);
-
-    if (userRole == Role.ADMIN) {
-      log.info("상품 등록 요청 받음. 상품명: {}", requestDto.getName());
-      productService.saveProduct(requestDto);
-      log.info("상품 등록 완료. 상품명: {}", requestDto.getName());
-      return new ResponseEntity<>("상품 등록이 완료되었습니다.", HttpStatus.OK);
-    } else {
+    log.info("유저의 역할 : {}", role);
+    if (Role.USER == Role.of(role)) {
       throw new CustomException(CustomErrorCode.NOT_EXIST_ROLE);
     }
+
+    log.info("상품 등록 요청 받음. 상품명: {}", requestDto.getName());
+    productService.saveProduct(requestDto);
+    log.info("상품 등록 완료. 상품명: {}", requestDto.getName());
+    return new ResponseEntity<>("상품 등록이 완료되었습니다.", HttpStatus.OK);
   }
 
   @GetMapping("/findAll")
@@ -129,10 +128,10 @@ public class ProductController {
 //    Role userRole = Role.of(role);
 
 //    if (userRole == Role.ADMIN) {
-      log.info("상품 삭제 요청 받음. 상품 ID: {}", productId);
-      productService.deleteProduct(productId);
-      log.info("상품 삭제 완료. 상품 ID: {}", productId);
-      return ResponseEntity.ok("상품이 삭제되었습니다.");
+    log.info("상품 삭제 요청 받음. 상품 ID: {}", productId);
+    productService.deleteProduct(productId);
+    log.info("상품 삭제 완료. 상품 ID: {}", productId);
+    return ResponseEntity.ok("상품이 삭제되었습니다.");
 //    } else {
 //      throw new CustomException(CustomErrorCode.NOT_EXIST_ROLE);
 //    }
