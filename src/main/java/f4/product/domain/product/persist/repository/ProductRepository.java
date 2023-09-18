@@ -12,16 +12,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository
     extends JpaRepository<Product, JpaSpecificationExecutor<Product>> {
+  @Query("SELECT p FROM Product p ORDER BY CASE WHEN p.auctionStatus = 'PROGRESS' THEN 1 ELSE 2 END")
+  List<Product> findAll();
 
   Optional<Product> findByIdentifier(String identifier);
-
   Optional<List<Product>> findByName(String name);
-
   Optional<List<Product>> findByArtist(String artist);
-
   Optional<Product> findById(Long productId);
-
-  //  @Query("SELECT p FROM Product p WHERE p.theme = :medium AND (LOWER(p.style) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.technique) LIKE LOWER(CONCAT('%', :keyword, '%')))")
   @Query("SELECT p FROM Product p WHERE p.medium = :medium " +
       "AND (:keyword IS NULL OR " +
       "LOWER(p.theme) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
